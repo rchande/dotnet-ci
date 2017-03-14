@@ -105,15 +105,15 @@ class Utilities {
         ]
         return bootstrapRidMap.get(os, null)
     }
-
-    // Given the name of an OS, set the nodes that this job runs on.
+    
+    // Given the name of an OS and image version, get the label that
+    // this task would run on
     //
     // Parameters:
     //  job: Job to set affinity for
     //  osName: Name of OS to to run on.
-    //  version: Optional version of the image.  This version can be the date potentially followed
-    //           by .1, .2, etc. or it could be a static image version (like a perf label).
-    def static setMachineAffinity(def job, String osName, String version = '') {
+    //  version: Version of the image
+    def static getMachineAffinity(String osName, String version) {
         if (osName == 'Ubuntu') {
             osName = 'Ubuntu14.04'
         }
@@ -370,6 +370,19 @@ class Utilities {
         assert versionLabelMap != null : "Could not find os ${osName}"
         def machineLabel = versionLabelMap.get(version, null)
         assert machineLabel != null : "Could not find version ${version} of ${osName}"
+        
+        return machineLabel
+    }
+
+    // Given the name of an OS, set the nodes that this job runs on.
+    //
+    // Parameters:
+    //  job: Job to set affinity for
+    //  osName: Name of OS to to run on.
+    //  version: Optional version of the image.  This version can be the date potentially followed
+    //           by .1, .2, etc. or it could be a static image version (like a perf label).
+    def static setMachineAffinity(def job, String osName, String version = '') {
+        def machineLabel = getMachineAffinity(osName, version)
         job.with {
             label(machineLabel)
         }
