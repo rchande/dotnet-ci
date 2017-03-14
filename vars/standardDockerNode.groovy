@@ -2,7 +2,7 @@ import jobs.generation.Utilities
 
 // Runs a set of functionality on the default node
 // that supports docker.
-def call(String dockerContainerName, Closure body) {
+def call(String dockerImageName, Closure body) {
     node (Utilities.getMachineAffinity('Ubuntu16.04', 'latest-or-auto-docker')) {
         // Wrap in a try finally that cleans up the workspace
         try {
