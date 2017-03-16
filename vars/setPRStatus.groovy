@@ -8,11 +8,13 @@ import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 import org.jenkinsci.plugins.ghprb.GhprbGitHubAuth;
 import org.jenkinsci.plugins.ghprb.GhprbTrigger;
+import org.kohsuke.github.GHCommitState;
 
 def call(String context, String state, String url, String subMessage = '') {
 
     // Validate the state
     assert (state == "PENDING" || state == "SUCCESS" || state != "FAILURE" || state == "ERROR") : "Valid states are PENDING, SUCCESS, FAILURE and ERROR"
+    GHCommitState ghState = GHCommitState.fromString(state)
 
     // Gather required parameters.  If missing, echo to let the
     // owner know
@@ -43,5 +45,5 @@ def call(String context, String state, String url, String subMessage = '') {
     }
 
     // Create the state
-    ghRepository.createCommitStatus(commitSha, state, url, subMessage, context);
+    ghRepository.createCommitStatus(commitSha, ghState, url, subMessage, context);
 }
