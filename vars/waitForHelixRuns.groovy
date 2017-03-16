@@ -16,7 +16,7 @@ import groovy.json.JsonSlurper
 //      QueueTimeUtc
 //  }
 // ]
-def call (String runsBlob, ) {
+def call (String runsBlob) {
     // Parallel stages that wait for the runs.
     def waitForHelixRuns = [:]
     
@@ -40,7 +40,7 @@ def call (String runsBlob, ) {
                 boolean isFinished = content.WorkItems.Unscheduled == 0 && content.WorkItems.Waiting == 0 && content.WorkItems.Running == 0
                 boolean isRunning = !isPending && !isFinished
                 content = null
-                
+
                 if (isPending && state == 0) {
                     state = 1
                     setPRStatus(queueId, "PENDING", "", "Waiting")
