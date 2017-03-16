@@ -31,7 +31,7 @@ def call(String context, String state, String url, String subMessage = '') {
     // Grab the repository associated
     def repository = env["ghprbGhRepository"]
     if (repository == "") {
-        echo "Could not find repository name (ghprbGhRepository), ${context} (${messubMessubMessagesagesage}) is ${state}, see ${url}"
+        echo "Could not find repository name (ghprbGhRepository), ${context} (${subMessage}) is ${state}, see ${url}"
         return
     }
 
