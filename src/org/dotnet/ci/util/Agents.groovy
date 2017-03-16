@@ -7,16 +7,16 @@ class Agents {
     //  version - Version to use.  Typically either latest or an alias corresponding to the target product
     // Returns:
     //  Label for the VM to use
-    static String getDockerMachineAffinity(String version) {
+    static String getDockerAgentLabel(String version) {
         switch (version) {
             // Latest version
             case 'latest':
-                return getMachineAffinity('Ubuntu16.04', 'latest-or-auto-docker')
+                return getAgentLabel('Ubuntu16.04', 'latest-docker')
                 break
             
             // Current version in use for netcore 2.0
             case 'netcore2.0':
-                return getMachineAffinity('Ubuntu16.04', '20170216')
+                return getAgentLabel('Ubuntu16.04', '20170216')
                 break
 
             default:
@@ -33,7 +33,7 @@ class Agents {
     //  version: Version of the image
     // Returns:
     //  String representing the label that the task should target
-    static String getMachineAffinity(String osName, String version) {
+    static String getAgentLabel(String osName, String version) {
         if (osName == 'Ubuntu') {
             osName = 'Ubuntu14.04'
         }
@@ -43,11 +43,12 @@ class Agents {
             osName = 'OSX10.11'
         }
 
+        // Move off of "latest" by simply removing the 'or-auto' bit
+        version = version.replace('-or-auto', '')
+
         def machineMap    = [
                             'Ubuntu14.04' :
                                 [
-                                // Generic version label
-                                '':'auto-ubuntu1404-20160211',
                                 // Specific auto-image label
                                 '201626':'auto-ubuntu1404-201626',
                                 // Contains an updated version of mono
@@ -62,20 +63,18 @@ class Agents {
                                 // till we have the working build/test, then apply to everything.
                                 'arm-cross-latest':'auto-ubuntu1404-20170120',
                                 // Latest auto image.
-                                'latest-or-auto':'auto-ubuntu1404-20160211.1',
+                                'latest':'auto-ubuntu1404-20160211.1',
                                 // For outerloop runs.
-                                'outer-latest-or-auto':'auto-ubuntu1404-201626outer',
+                                'outer-latest':'auto-ubuntu1404-201626outer',
                                 // For internal Ubuntu runs
-                                'latest-or-auto-internal':'auto-ubuntu1404-20160211.1-internal'
+                                'latest-internal':'auto-ubuntu1404-20160211.1-internal'
                                 ],
                             'Ubuntu15.10' :
                                 [
-                                // Generic version label
-                                '' : 'auto-ubuntu1510-20160307',
                                 // Latest auto image.
-                                'latest-or-auto':'auto-ubuntu1510-20160307',
+                                'latest':'auto-ubuntu1510-20160307',
                                 // For outerloop runs.
-                                'outer-latest-or-auto':'auto-ubuntu1510-20160307outer'
+                                'outer-latest':'auto-ubuntu1510-20160307outer'
                                 ],
                             'Ubuntu16.04' :
                                 [
@@ -88,12 +87,12 @@ class Agents {
                                 // Aliases:
 
                                 // Latest auto image.
-                                'latest-or-auto':'ubuntu1604-20170216',
+                                'latest':'ubuntu1604-20170216',
                                 // auto-ubuntu1604-20160510 + docker.
-                                // Move this to latest-or-auto after validation
-                                'latest-or-auto-docker':'ubuntu1604-20170216',
+                                // Move this to latest after validation
+                                'latest-docker':'ubuntu1604-20170216',
                                 // For outerloop runs.
-                                'outer-latest-or-auto':'ubuntu1604-20170216-outer',
+                                'outer-latest':'ubuntu1604-20170216-outer',
                                 // For outerloop runs, using Linux kernel version 4.6.2
                                 'outer-linux462': 'auto-auto-ubuntu1604-20160510-20160715outer'
                                 ],
@@ -102,38 +101,32 @@ class Agents {
                                 // Latest auto image.  This will be used for transitioning
                                 // to the auto images, at which point we will move back to
                                 // the generic unversioned label except for special cases.
-                                'latest-or-auto':'ubuntu1610-20170216',
+                                'latest':'ubuntu1610-20170216',
                                 // For outerloop runs.
-                                'outer-latest-or-auto':'ubuntu1610-20170216-outer',
+                                'outer-latest':'ubuntu1610-20170216-outer',
                                 ],
                             'OSX10.11' :
                                 [
-                                // Generic version label
-                                '' : 'mac',
                                 // Latest auto image.
-                                'latest-or-auto':'mac',
+                                'latest':'mac',
                                 // For elevated runs
-                                'latest-or-auto-elevated':'mac-elevated'
+                                'latest-elevated':'mac-elevated'
                                 ],
                             // El Capitan
                             'OSX10.11' :
                                 [
-                                // Generic version label
-                                '' : 'osx-10.11',
                                 // Latest auto image.
-                                'latest-or-auto':'osx-10.11',
+                                'latest':'osx-10.11',
                                 // For elevated runs
-                                'latest-or-auto-elevated':'osx-10.11-elevated'
+                                'latest-elevated':'osx-10.11-elevated'
                                 ],
                             // Sierra
                             'OSX10.12' :
                                 [
-                                // Generic version label
-                                '' : 'osx-10.12',
                                 // Latest auto image.
-                                'latest-or-auto':'osx-10.12',
+                                'latest':'osx-10.12',
                                 // For elevated runs
-                                'latest-or-auto-elevated':'osx-10.12-elevated'
+                                'latest-elevated':'osx-10.12-elevated'
                                 ],
                             // This is Windows Server 2012 R2
                             'Windows_NT' :
@@ -150,35 +143,35 @@ class Agents {
                                 '20161027' : 'win2012-20161027',
                                 // Latest auto image.
                                 // the generic unversioned label except for special cases.
-                                'latest-or-auto':'win2012-20170303',
+                                'latest':'win2012-20170303',
                                 // Win2012.R2 + VS2013.5 + VS2015.3 + VS15.P3
-                                'latest-or-auto-dev15':'auto-win2012-20160707',
+                                'latest-dev15':'auto-win2012-20160707',
                                 // Win2012.R2 + VS2013.5 + VS2015.3 + VS15.P4
-                                'latest-or-auto-dev15-preview4':'auto-win2012-20160912',
+                                'latest-dev15-preview4':'auto-win2012-20160912',
                                 // Win2016 + VS15.P5
-                                'latest-or-auto-dev15-preview5':'win2016-20161013-1',
+                                'latest-dev15-preview5':'win2016-20161013-1',
                                 // Win2016 + VS15.RC2
-                                'latest-or-auto-dev15-rc2':'win2016-20170105',
+                                'latest-dev15-rc2':'win2016-20170105',
                                 // Win2016 + VS15.RC4
-                                'latest-or-auto-dev15-rc':'win2016-20170214',
+                                'latest-dev15-rc':'win2016-20170214',
                                 // Win2016 + VS15.0
-                                'latest-or-auto-dev15-0':'win2016-20170307',
+                                'latest-dev15-0':'win2016-20170307',
                                 // Dev15 image
                                 'latest-dev15':'auto-win2012-20160506',
                                 // For internal runs
-                                'latest-or-auto-internal':'auto-win2012-20160707-internal',
+                                'latest-internal':'auto-win2012-20160707-internal',
                                 // For internal runs - Win2016 + VS15.RC2
-                                'latest-or-auto-dev15-rc2-internal':'win2016-20170105-internal',
+                                'latest-dev15-rc2-internal':'win2016-20170105-internal',
                                 // For internal runs - Win2016 + VS15.RC4
-                                'latest-or-auto-dev15-internal':'win2016-20170214-internal',
+                                'latest-dev15-internal':'win2016-20170214-internal',
                                 // For internal runs - Win2016 + VS15.0
-                                'latest-or-auto-dev15-0-internal':'win2016-20170307-internal',
+                                'latest-dev15-0-internal':'win2016-20170307-internal',
                                 // For internal runs which don't need/want the static 'windows-internal' pool
                                 'latest-dev15-internal':'auto-win2012-20160707-internal',
                                 // For elevated runs
-                                'latest-or-auto-elevated':'win2012-20170303-elevated',
+                                'latest-elevated':'win2012-20170303-elevated',
                                 // For perf runs
-                                'latest-or-auto-perf':'windows-perf-internal',
+                                'latest-perf':'windows-perf-internal',
                                 // Win2016
                                 'win2016-base': 'win2016-base',
                                 // Win2016
@@ -188,10 +181,10 @@ class Agents {
                                 [
                                 // First working containers image
                                 'win2016-20161018-1':'win2016-20161018-1',
-                                // Latest auto image w/docker (move to latest-or-auto when possible)
+                                // Latest auto image w/docker (move to latest when possible)
                                 'latest-containers':'win2016-20161018-1',
                                 // Latest auto image.
-                                'latest-or-auto':'auto-win2016-20160223'
+                                'latest':'auto-win2016-20160223'
                                 ],
                             'Windows Nano 2016' :
                                 [
@@ -201,79 +194,75 @@ class Agents {
                             'Windows 10' :
                                 [
                                 // Latest auto image.
-                                'latest-or-auto':'win2016-20170303'
+                                'latest':'win2016-20170303'
                                 ],
                             'Windows 7' :
                                 [
                                 '20161104':'win2008-20170303',
                                 // Latest auto image.
-                                'latest-or-auto':'win2008-20170303'
+                                'latest':'win2008-20170303'
                                 ],
                             'FreeBSD' :
                                 [
                                 // Latest auto image.
-                                'latest-or-auto':'freebsd-20161026'
+                                'latest':'freebsd-20161026'
                                 ],
                             'RHEL7.2' :
                                 [
-                                '' : 'auto-rhel72-20160211',
                                 // Latest auto image.
-                                'latest-or-auto':'auto-rhel72-20160211',
+                                'latest':'auto-rhel72-20160211',
                                 // For outerloop runs.
-                                'outer-latest-or-auto':'auto-rhel72-20160412.1outer'
+                                'outer-latest':'auto-rhel72-20160412.1outer'
                                 ],
                             'CentOS7.1' :
                                 [
                                 // Latest auto image.
-                                'latest-or-auto':'centos71-20170216',
+                                'latest':'centos71-20170216',
                                 // For outerloop runs.
-                                'outer-latest-or-auto':'centos71-20170216-outer',
+                                'outer-latest':'centos71-20170216-outer',
                                 // For outerloop runs, using Linux kernel version 4.6.4
                                 'outer-linux464': 'auto-auto-centos71-20160609.1-20160715outer'
                                 ],
                             'OpenSUSE13.2' :
                                 [
-                                '' : 'auto-suse132-20160315',
                                 // Latest auto image.
-                                'latest-or-auto':'auto-suse132-20160315',
+                                'latest':'auto-suse132-20160315',
                                 // For outerloop runs
-                                'outer-latest-or-auto':'auto-suse132-20160315outer'
+                                'outer-latest':'auto-suse132-20160315outer'
                                 ],
                             'OpenSUSE42.1' :
                                 [
                                 // Latest auto image.
-                                'latest-or-auto':'suse421-20170216',
+                                'latest':'suse421-20170216',
                                 // For outerloop runs
-                                'outer-latest-or-auto':'suse421-20170216-outer'
+                                'outer-latest':'suse421-20170216-outer'
                                 ],
                             'Debian8.2' :
                                 [
-                                '' : 'auto-deb82-20160323',
                                 '20160323':'auto-deb82-20160323',
                                 // Latest auto image.
-                                'latest-or-auto':'auto-deb82-20160323'
+                                'latest':'auto-deb82-20160323'
                                 ],
                             'Debian8.4' :
                                 [
                                 // Latest auto image.
-                                'latest-or-auto':'deb84-20170214',
+                                'latest':'deb84-20170214',
                                 // For outerloop runs
-                                'outer-latest-or-auto':'deb84-20170214-outer'
+                                'outer-latest':'deb84-20170214-outer'
                                 ],
                            'Fedora23' :
                                 [
-                                '' : 'auto-fedora23-20160622',
                                 // Latest auto image.
-                                'latest-or-auto':'auto-fedora23-20160622',
+                                'latest':'auto-fedora23-20160622',
                                 // For outerloop runs
-                                'outer-latest-or-auto':'auto-fedora23-20160622outer'
+                                'outer-latest':'auto-fedora23-20160622outer'
                                 ],
                             'Fedora24' :
                                 [
                                 // Latest auto image.
-                                'latest-or-auto':'fedora24-20161024',
+                                'latest':'fedora24-20161024',
                                 // For outerloop runs
-                                'outer-latest-or-auto':'fedora24-20161024-outer'
+                                'outer-latest':'fedora24-20161024-outer'
                                 ],
                             'Tizen' :
                                 [
@@ -282,14 +271,13 @@ class Agents {
                                 // till we have the working build/test, then apply to everything.
                                 'arm-cross-latest':'auto-ubuntu1404-20170120',
                                 // Latest auto image.
-                                'latest-or-auto':'auto-ubuntu1404-20170120',
+                                'latest':'auto-ubuntu1404-20170120',
                                 ],
                                 // Some nodes don't have git, which is what is required for the
                                 // generators.
                             'Generators' :
                                 [
-                                '' : '!windowsnano16',
-                                'latest-or-auto':'!windowsnano16 && !arm64 && !performance'
+                                'latest':'!windowsnano16 && !arm64 && !performance'
                                 ]
                             ]
         def versionLabelMap = machineMap.get(osName, null)

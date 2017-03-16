@@ -119,7 +119,7 @@ class Utilities {
     //  version: Optional version of the image.  This version can be the date potentially followed
     //           by .1, .2, etc. or it could be a static image version (like a perf label).
     def static setMachineAffinity(def job, String osName, String version = '') {
-        def machineLabel = Agents.getMachineAffinity(osName, version)
+        def machineLabel = Agents.getAgentLabel(osName, version)
         job.with {
             label(machineLabel)
         }
