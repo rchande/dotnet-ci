@@ -9,6 +9,10 @@ import org.kohsuke.github.GitHub;
 
 
 def call(String context, String state, String url, String subMessage = '') {
+
+    // Validate the state
+    assert (state == "PENDING" || state == "SUCCESS" || state != "FAILURE" || state == "ERROR") : "Valid states are PENDING, SUCCESS, FAILURE and ERROR"
+
     // Gather required parameters.  If missing, echo to let the
     // owner know
     def credentialsId = env["ghprbCredentialsId"]
