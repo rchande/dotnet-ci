@@ -24,7 +24,7 @@ def call(String context, String state, String url, String subMessage = '') {
     GhprbGitHubAuth auth = GhprbTrigger.getDscp().getGitHubAuth(credentialsId);
 
     // Grab the project we're building
-    GitHub gh = auth.getConnection(currentBuild.rawBuild.getProject());
+    GitHub gh = auth.getConnection(currentBuild.rawBuild.getParent());
 
     // Grab the repository associated
     def repository = env["ghprbGhRepository"]
