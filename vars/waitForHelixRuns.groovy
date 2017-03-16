@@ -16,9 +16,9 @@ import groovy.json.JsonSlurper
 //      QueueTimeUtc
 //  }
 // ]
-def call (String runsBlob) {
+def call (String helixRunsBlob) {
     // Parallel stages that wait for the runs.
-    def waitForHelixRuns = [:]
+    def helixRunTasks = [:]
     
     // State to minimize status updates.
     // 0 = Not yet updated
@@ -26,11 +26,11 @@ def call (String runsBlob) {
     // 2 = Started updated
     int state = 0;
 
-    for (int i = 0; i < helixRuns.size(); i++) {
-        def currentRun = helixRuns[i];
+    for (int i = 0; i < helixRunsBlob.size(); i++) {
+        def currentRun = helixRunsBlob[i];
         def queueId = currentRun['QueueId']
         def correlationId = currentRun['CorrelationId']
-        waitForHelixRuns[queueId] = {
+        helixRunTasks[queueId] = {
 
             waitUntil {
                 // Check the state against the Helix API
@@ -60,6 +60,6 @@ def call (String runsBlob) {
         }
     }
     stage ('Execute Tests') {
-        parallel waitForHelixRuns
+        parallel helixRunTasks
     }
 }
