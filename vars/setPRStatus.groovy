@@ -14,7 +14,7 @@ def call(String context, String state, String url, String subMessage = '') {
 
     // Validate the state
     assert (state == "PENDING" || state == "SUCCESS" || state != "FAILURE" || state == "ERROR") : "Valid states are PENDING, SUCCESS, FAILURE and ERROR"
-    GHCommitState ghState = GHCommitState.fromString(state)
+    GHCommitState ghState = GHCommitState.valueOf(state)
 
     // Gather required parameters.  If missing, echo to let the
     // owner know
