@@ -2,6 +2,28 @@ package org.dotnet.ci.util;
 
 // Contains functionality to deal with agents.
 class Agents {
+    // Retrieves the machine affinity for a build that needs docker
+    // Parameters:
+    //  version - Version to use.  Typically either latest or an alias corresponding to the target product
+    // Returns:
+    //  Label for the VM to use
+    static String getDockerMachineAffinity(String version) {
+        switch (version) {
+            // Latest version
+            case 'latest':
+                return getMachineAffinity('Ubuntu16.04', 'latest-or-auto-docker')
+                break
+            
+            // Current version in use for netcore 2.0
+            case 'netcore2.0'
+                return getMachineAffinity('Ubuntu16.04', '20170216')
+                break
+
+            default:
+                assert false : "Version ${version} not recognized"
+        }
+    }
+
     // Given the name of an OS and image version, get the label that
     // this task would run on
     //
@@ -57,8 +79,14 @@ class Agents {
                                 ],
                             'Ubuntu16.04' :
                                 [
+                                // Explicit versions:
+
                                 // Contains auto-ubuntu1604-20160803 + gdb + mono 4.6.2.16
                                 '20170109':'ubuntu1604-20170109',
+                                '20170216':'ubuntu1604-20170216',
+
+                                // Aliases:
+
                                 // Latest auto image.
                                 'latest-or-auto':'ubuntu1604-20170216',
                                 // auto-ubuntu1604-20160510 + docker.
