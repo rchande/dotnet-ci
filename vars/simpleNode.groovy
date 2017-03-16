@@ -14,7 +14,7 @@ import org.dotnet.ci.util.Agents
 //  imageVersion - Version of the OS image.  See Agents.getMachineAffinity
 //  body - Closure, see example
 def call(String osName, version, Closure body) {
-    node (Agents.getMachineAffinity(osName, imageVersion)) {
+    node (Agents.getAgentLabel(osName, imageVersion)) {
         // Wrap in a try finally that cleans up the workspace
         try {
             // Wrap in the default timeout of 120 mins

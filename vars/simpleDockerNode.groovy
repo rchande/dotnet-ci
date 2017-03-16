@@ -25,7 +25,7 @@ def call(String dockerImageName, Closure body) {
 //  hostVersion - Host VM version.  See Agents.getDockerMachineAffinity for explanation.
 //  body - Closure, see example
 def call(String dockerImageName, String hostVersion, Closure body) {
-    node (Agents.getDockerMachineAffinity(hostVersion)) {
+    node (Agents.getDockerAgentLabel(hostVersion)) {
         // Wrap in a try finally that cleans up the workspace
         try {
             // Wrap in the default timeout of 120 mins
