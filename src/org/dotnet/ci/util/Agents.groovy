@@ -15,7 +15,7 @@ class Agents {
                 break
             
             // Current version in use for netcore 2.0
-            case 'netcore2.0'
+            case 'netcore2.0':
                 return getMachineAffinity('Ubuntu16.04', '20170216')
                 break
 
