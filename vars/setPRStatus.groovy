@@ -6,7 +6,8 @@
 import org.kohsuke.github.GHCommitState;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
-
+import org.jenkinsci.plugins.ghprb.GhprbGitHubAuth;
+import org.jenkinsci.plugins.ghprb.GhprbTrigger;
 
 def call(String context, String state, String url, String subMessage = '') {
 
