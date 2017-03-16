@@ -16,7 +16,7 @@ import groovy.json.JsonSlurper
 //      QueueTimeUtc
 //  }
 // ]
-def call (String helixRunsBlob) {
+def call (def helixRunsBlob) {
     // Parallel stages that wait for the runs.
     def helixRunTasks = [:]
     
