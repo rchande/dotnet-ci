@@ -34,9 +34,8 @@ def call (def helixRunsBlob) {
 
             waitUntil {
                 // Check the state against the Helix API
-                def response = httpRequest "https://helix.dot.net/api/jobs/${correlationId}"
+                def response = httpRequest "https://helix.dot.net/api/jobs/${correlationId}/details"
                 def content = (new JsonSlurper()).parseText(response.content)
-                echo content
                 boolean isPending = content.WorkItems.Running == 0 && content.WorkItems.Finished == 0
                 boolean isFinished = content.WorkItems.Unscheduled == 0 && content.WorkItems.Waiting == 0 && content.WorkItems.Running == 0
                 boolean isRunning = !isPending && !isFinished
