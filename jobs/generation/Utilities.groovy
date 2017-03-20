@@ -1,7 +1,7 @@
 package jobs.generation;
 
-// Import the newer utility APIs, which we call
-import org.dotnet.ci.util.Agents
+// Import the newer utility APIs, which we call in a few selection methods.
+import src.org.dotnet.ci.util.Agents
     
 class Utilities {
 
