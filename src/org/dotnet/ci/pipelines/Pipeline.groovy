@@ -1,6 +1,7 @@
 package org.dotnet.ci.pipelines;
 
 import jobs.generation.Utilities
+import org.dotnet.ci.triggers.GithubTriggerBuilder
 
 // Contains functionality to deal with Jenkins pipelines.
 // This class enables us to inform Jenkins about pipelines and set up triggers for those pipeline/parameter combos
@@ -13,9 +14,10 @@ class Pipeline {
     // Context of the Job DSL to use for creating jobs
     private def _context
 
-    public Pipeline(String baseJobName, String pipelineFile) {
+    private Pipeline(def context, String baseJobName, String pipelineFile) {
         _pipelineFile = pipelineFile
         _baseJobName = baseJobName
+        _context = context
     }
 
     public setSourceControl(SourceControl sourceControl) {
@@ -46,18 +48,24 @@ class Pipeline {
     // Creates a new pipeline given the pipeline groovy script that
     // will be invoked.  A base job name is derived from the pipeline file name
     // Parameters:
+    //  context - Context used to construct new pipelines.  Pass 'this' from groovy file.
+    //  project - GitHub project that the pipeline lives in.
+    //  branch - Branch that the project lives in
     //  pipelineFile - File name relative to root of the repo
-    public static Pipeline createPipelineForGithub(String project, String branch, String pipelineFile) {
+    public static Pipeline createPipelineForGithub(def context, String project, String branch, String pipelineFile) {
         String baseName = getDefaultPipelineJobBaseName(pipelineFile)
-        return createPipelineForGitHub(project, branch, pipelineFile, baseName)
+        return createPipelineForGitHub(context, project, branch, pipelineFile, baseName)
     }
 
     // Creates a new pipeline given the pipeline groovy script that
     // will be invoked and a base name for the jobs that will be created
     // Parameters:
+    //  context - Context used to construct new pipelines.  Pass 'this' from groovy file.
+    //  project - GitHub project that the pipeline lives in.
+    //  branch - Branch that the project lives in
     //  pipelineFile - File name relative to root of the repo
     //  baseJobName - Jobs that invoke the pipeline will be created with this base name
-    public static Pipeline createPipelineForGitHub(String project, String branch, String pipelineFile, String baseJobName) {
+    public static Pipeline createPipelineForGitHub(def context, String project, String branch, String pipelineFile, String baseJobName) {
         def newPipeline = new Pipeline(pipelineFile, baseJobName)
 
         // Create a new source control for the basic setup here
@@ -66,9 +74,21 @@ class Pipeline {
         return newPipeline
     }
 
-    // Creates a new job that triggers based on
-    // a Github PR
-    public def triggerPipelineOnPR(String context, String triggerPhrase, def parameters = [:]) {
+    // Triggers a puipeline on every Github PR.
+    // Parameters:
+    //  context - The context that appears for the status check in the Github UI
+    //  parameter - Optional set of key/value pairs of string parameters that will be passed to the pipeline
+    public def triggerPipelineOnEveryGithubPR(String context, def parameters = [:]) {
+        // Create the default trigger phrase based on the context
+        return triggerPipelineOnPR(context, null, parameters)
+    }
+
+    // Triggers a puipeline on every Github PR, with a custom trigger phrase.
+    // Parameters:
+    //  context - The context that appears for the status check in the Github UI
+    //  triggerPhrase - The trigger phrase that can relaunch the pipeline
+    //  parameters - Optional set of key/value pairs of string parameters that will be passed to the pipeline
+    public def triggerPipelineOnEveryGithubPR(String context, String triggerPhrase, def parameters = [:]) {
         // Determine the job name
         // Job name is based off the parameters 
 
@@ -82,11 +102,31 @@ class Pipeline {
         _scm.emitScmForPR(newJob, _pipelineFile)
 
         // Set up the triggering
-        TriggerBuilder builder = TriggerBuilder.triggerOnPullRequest()
+        GithubTriggerBuilder builder = GithubTriggerBuilder.triggerOnPullRequest()
         builder.setGithubContext(context)
     }
 
-    public def triggerPipelineOnPush(def parameters = [:]) {
+    // Triggers a pipeline on a Github PR when the specified phrase is commented.
+    // Parameters:
+    //  context - The context that appears for the status check in the Github UI
+    //  triggerPhrase - The trigger phrase that can relaunch the pipeline
+    //  parameters - Optional set of key/value pairs of string parameters that will be passed to the pipeline
+    public def triggerPipelineOnGithubPRComment(String context, String triggerPhrase, def parameters = [:]) {
+        // Create the trigger event and call the helper API
+        GithubTriggerBuilder builder = GithubTriggerBuilder.triggerOnPullRequest()
+        builder.setGithubContext(context)
+        builder.setCustomTriggerPhrase(triggerPhrase)
+        builder.triggerOnlyOnComment()
+        triggerPipelineOnGithubEvent
+    }
+
+    // Triggers a puipeline on a Github PR, using 
+    public def triggerPipelineOnGithubPRComment(String context, def parameters = [:]) {
+        // Create the default trigger phrase based on the context
+        return triggerPipelineOnPR(context, null, parameters)
+    }
+
+    public def triggerPipelineOnGithubPush(def parameters = [:]) {
 
     }
 
@@ -94,7 +134,7 @@ class Pipeline {
 
     }
 
-    public def triggerPipelineOnCustom(TriggerBuilder triggerBuilder, def parameters = [:]) {
+    public def triggerPipelineOnGithubEvent(GithubTriggerBuilder triggerBuilder, def parameters = [:]) {
         // Determine the job name
         // Job name is based off the parameters 
 
@@ -105,12 +145,9 @@ class Pipeline {
         def newJob = createStandardPipelineJob(fullJobName, parameters)
     }
 
-    private def 
-
     private def createStandardPipelineJob(String fullJobName, boolean isPR, def parameters = [:]) {
         // Create the new pipeline job
-        def newJob = _context.pipelineJob(fullJobName) {            
-        }
+        def newJob = _context.pipelineJob(fullJobName) {}
 
         // Most options are set up in the pipeline itself.
         // We really only need to set up the retention policy
