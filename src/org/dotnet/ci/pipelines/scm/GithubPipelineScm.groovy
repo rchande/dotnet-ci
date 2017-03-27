@@ -2,7 +2,7 @@ package org.dotnet.ci.pipelines.scm;
 
 import jobs.generation.Utiliies
 
-interface GithubPipelineScm implements PipelineScm {
+class GithubPipelineScm implements PipelineScm {
     private String _project
     private String _branch
     private String _credentialsId
