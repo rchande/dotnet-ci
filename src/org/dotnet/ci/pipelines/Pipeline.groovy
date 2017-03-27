@@ -3,9 +3,10 @@ package org.dotnet.ci.pipelines;
 import jobs.generation.Utilities
 import org.apache.commons.lang.StringUtils;
 import hudson.Util;
-import org.dotnet.ci.triggers.GithubTriggerBuilder
-import org.dotnet.ci.triggers.GenericTriggerBuilder
-import org.dotnet.ci.pipelines.scm.PipelineScm
+import src.org.dotnet.ci.triggers.GithubTriggerBuilder
+import src.org.dotnet.ci.triggers.GenericTriggerBuilder
+import src.org.dotnet.ci.triggers.TriggerBuilder
+import src.org.dotnet.ci.pipelines.scm.PipelineScm
 
 // Contains functionality to deal with Jenkins pipelines.
 // This class enables us to inform Jenkins about pipelines and set up triggers for those pipeline/parameter combos
@@ -24,7 +25,7 @@ class Pipeline {
         _context = context
     }
 
-    public setSourceControl(SourceControl sourceControl) {
+    public setSourceControl(PipelineScm sourceControl) {
         _sourceControl = sourceControl
     }
 
