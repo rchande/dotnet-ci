@@ -2,93 +2,85 @@ package org.dotnet.ci.triggers;
 
 // Trigger builder for interfacing with GitHub.  This is a direct
 // copy of the jobs/generation/TriggerBuilder class.  
-class GithubTriggerBuilder {
+class GithubTriggerBuilder implements TriggerBuilder {
     public enum TriggerType {
         COMMIT,
         PULLREQUEST
     }
     
-    TriggerType triggerType;
-    
-    // Trigger type specific settings
+    TriggerType _triggerType;
     
     // PullRequest
-    String context = null
-    String triggerPhrase = null
-    boolean alwaysTrigger = true
-    boolean alwaysTriggerModified = false
-    List<String> targetBranches = []
-    List<String> skipBranches = []
-    List<String> permittedOrgs = []
-    List<String> permittedUsers = []
-    private boolean used = false;
+    String _context = null
+    String _triggerPhrase = null
+    boolean _alwaysTrigger = true
+    boolean _alwaysTriggerModified = false
+    List<String> _targetBranches = []
+    List<String> _skipBranches = []
+    List<String> _permittedOrgs = []
+    List<String> _permittedUsers = []
     
-    private def TriggerBuilder(TriggerType triggerType) {
-        this.triggerType = triggerType
+    private def GithubTriggerBuilder(TriggerType triggerType) {
+        this._triggerType = triggerType
     }
     
     // Commit trigger setup
     
-    def static TriggerBuilder triggerOnCommit() {
-        return new TriggerBuilder(TriggerType.COMMIT)
+    def static GithubTriggerBuilder triggerOnCommit() {
+        return new GithubTriggerBuilder(TriggerType.COMMIT)
     }
     
     // PR Trigger set up
     // Constructs a new pull request trigger
-    def static TriggerBuilder triggerOnPullRequest() {
-        return new TriggerBuilder(TriggerType.PULLREQUEST)
+    def static GithubTriggerBuilder triggerOnPullRequest() {
+        return new GithubTriggerBuilder(TriggerType.PULLREQUEST)
     }
     
     // Sets the context that the PR shows up as in the github UI.  If no context is
     // is set, then the job that this trigger is emitted on will be the context.
     // context
     def setGithubContext(String context) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
+        assert this._triggerType == TriggerType.PULLREQUEST
         this.context = context
         // If the trigger phrase isn't set yet, then set it now
-        if (this.triggerPhrase == null) {
-            this.triggerPhrase  = "(?i).*test\\W+${context}.*"
+        if (this._triggerPhrase == null) {
+            this._triggerPhrase  = "(?i).*test\\W+${context}.*"
         }
     }
     
     // Sets the trigger phrase.  If a trigger phrase is not explicitly set, test + <context> is used
     // Parameters:
-    //  triggerPhrase - Regex trigger phrase to used
+    //  triggerPhrase - Regex trigger phrase to use
     // Notes:
     //  When this is used, the 'always trigger' will be set to false unless that setting
-    // is modified
+    //  is modified
     def setCustomTriggerPhrase(String triggerPhrase) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
-        this.triggerPhrase = triggerPhrase
-        if (!this.alwaysTriggerModified) {
-            this.alwaysTrigger = false
+        assert this._triggerType == TriggerType.PULLREQUEST
+        this._triggerPhrase = triggerPhrase
+        if (!this._alwaysTriggerModified) {
+            this._alwaysTrigger = false
         }
     }
     
     // Sets the PR job to trigger by default.
     def triggerByDefault() {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
-        this.alwaysTrigger = true
-        this.alwaysTriggerModified = true
+        assert this._triggerType == TriggerType.PULLREQUEST
+        this._alwaysTrigger = true
+        this._alwaysTriggerModified = true
     }
     
     // Sets the PR job to trigger only when the trigger phrase is commented.
     def triggerOnlyOnComment() {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
-        this.alwaysTrigger = false
-        this.alwaysTriggerModified = true
+        assert this._triggerType == TriggerType.PULLREQUEST
+        this._alwaysTrigger = false
+        this._alwaysTriggerModified = true
     }
     
     // Set the job to trigger on the specified branch (adds to list)
     // Parameters:
     //  branch - Branch to trigger on.  Regular expression
     def triggerForBranch(String branch) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
+        assert this._triggerType == TriggerType.PULLREQUEST
         triggerForBranches([branch])
     }
     
@@ -96,17 +88,15 @@ class GithubTriggerBuilder {
     // Parameters:
     //  branches - Array of branches to trigger on. Regular expressions
     def triggerForBranches(List<String> branches) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
-        targetBranches.addAll(branches)
+        assert this._triggerType == TriggerType.PULLREQUEST
+        this._targetBranches.addAll(branches)
     }
     
     // Set the job to not trigger on the specified branch (adds to list)
     // Parameters:
     //  branch - Branch to not trigger on.  Regular expression
     def doNotTriggerForBranch(String branch) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
+        assert this._triggerType == TriggerType.PULLREQUEST
         doNotTriggerForBranches([branch])
     }
     
@@ -114,9 +104,8 @@ class GithubTriggerBuilder {
     // Parameters:
     //  branches - Branches to not trigger on.  Regular expressions
     def doNotTriggerForBranches(List<String> branches) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
-        skipBranches.addAll(branches)
+        assert this._triggerType == TriggerType.PULLREQUEST
+        this._skipBranches.addAll(branches)
     }
     
     // Set the job to trigger on the specified branches and not on another set.
@@ -124,8 +113,7 @@ class GithubTriggerBuilder {
     //  triggerBranches - Branches to trigger on.  Regular expressions
     //  doNotTriggerForBranches - Branches to not trigger on.  Regular expressions
     def setTriggerBranches(List<String> triggerBranches, List<String> notTriggerForBranches) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
+        assert this._triggerType == TriggerType.PULLREQUEST
         triggerForBranches(triggerBranches)
         doNotTriggerForBranches(notTriggerForBranches)
     }
@@ -136,8 +124,7 @@ class GithubTriggerBuilder {
     // Notes:
     //  By default, jobs are runnable by all submitters
     def permitOrg(String org) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
+        assert this._triggerType == TriggerType.PULLREQUEST
         permitOrgs([org])
     }
     
@@ -147,10 +134,9 @@ class GithubTriggerBuilder {
     // Notes:
     //  By default, jobs are runnable by all submitters 
     def permitOrgs(List<String> orgs) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
-        permittedOrgs += orgs
-        permittedOrgs = permittedOrgs.flatten()
+        assert this._triggerType == TriggerType.PULLREQUEST
+        this._permittedOrgs += orgs
+        this._permittedOrgs = this._permittedOrgs.flatten()
     }
     
     // Sets the PR to be run only if the submitter is one of the allowed users
@@ -159,8 +145,7 @@ class GithubTriggerBuilder {
     // Notes:
     //  By default, jobs are runnable by all submitters 
     def permitUser(String user) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
+        assert this._triggerType == TriggerType.PULLREQUEST
         permitUsers([user])
     }
     
@@ -170,10 +155,14 @@ class GithubTriggerBuilder {
     // Notes:
     //  By default, jobs are runnable by all submitters 
     def permitUsers(List<String> users) {
-        assert triggerType == TriggerType.PULLREQUEST
-        assert !used
-        permittedUsers += users
-        permittedUsers = permittedUsers.flatten()
+        assert this._triggerType == TriggerType.PULLREQUEST
+        this._permittedUsers += users
+        this._permittedUsers = this._permittedUsers.flatten()
+    }
+
+    // Returns true if the trigger is a PR (private or PR branch) SCM, vs. 'official'
+    public boolean isPRTrigger() {
+        return (this._triggerType == TriggerType.PULLREQUEST)
     }
     
     // Emits the trigger for a job
@@ -181,10 +170,10 @@ class GithubTriggerBuilder {
     //  job - Job to emit the trigger for.
     def emitTrigger(def job) {
     
-        if (triggerType == TriggerType.PULLREQUEST) {
+        if (this._triggerType == TriggerType.PULLREQUEST) {
             this.emitPRTrigger(job)
         }
-        else if (triggerType == TriggerType.COMMIT) {
+        else if (this._triggerType == TriggerType.COMMIT) {
             this.emitCommitTrigger(job)
         }
         else {
@@ -206,9 +195,7 @@ class GithubTriggerBuilder {
     }
     
     def private emitPRTrigger(def job) {
-        assert !used
-        
-        def boolean permitAllSubmitters = (permittedUsers.size() == 0 && permittedOrgs.size() == 0)
+        def boolean permitAllSubmitters = (this._permittedUsers.size() == 0 && this._permittedOrgs.size() == 0)
         
         job.with {
             triggers {
@@ -220,15 +207,15 @@ class GithubTriggerBuilder {
                         permitAll()
                     }
                     else {
-                        assert permittedOrgs.size() != 0 || permittedUsers.size() != 0
+                        assert this._permittedOrgs.size() != 0 || this._permittedUsers.size() != 0
                         permitAll(false)
-                        if (permittedUsers.size() != 0) {
-                            permittedUsers.each { permittedUser ->
+                        if (this._permittedUsers.size() != 0) {
+                            this._permittedUsers.each { permittedUser ->
                                 admin(permittedUser)
                             }
                         }
-                        if (permittedOrgs.size() != 0) {
-                            permittedOrgs.each { permittedOrg ->
+                        if (this._permittedOrgs.size() != 0) {
+                            this._permittedOrgs.each { permittedOrg ->
                                 orgWhitelist(permittedOrg)
                             }
                             allowMembersOfWhitelistedOrgsAsAdmin(true)
@@ -241,22 +228,22 @@ class GithubTriggerBuilder {
                         }
                     }
                     
-                    if (!alwaysTrigger) {
+                    if (!_alwaysTrigger) {
                         onlyTriggerPhrase(true)
                     }
-                    triggerPhrase(this.triggerPhrase)
+                    triggerPhrase(this._triggerPhrase)
                     
-                    if (targetBranches.size() != 0) {
+                    if (this._targetBranches.size() != 0) {
                         whiteListTargetBranches(targetBranches)
                     }
-                    if (skipBranches.size() != 0) {
+                    if (this._skipBranches.size() != 0) {
                         // When this is implemented and rolled out, enable
-                        blackListTargetBranches(skipBranches)
+                        blackListTargetBranches(this._skipBranches)
                     }
                 }
             }
             
-            JobReport.Report.addPRTriggeredJob(job.name, (String[])targetBranches.toArray(), this.context, this.triggerPhrase, alwaysTrigger)
+            JobReport.Report.addPRTriggeredJob(job.name, (String[])targetBranches.toArray(), this.context, this.triggerPhrase, this._alwaysTrigger)
         }
         Utilities.addJobRetry(job)
     }

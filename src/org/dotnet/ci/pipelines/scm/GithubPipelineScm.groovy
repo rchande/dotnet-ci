@@ -1,4 +1,4 @@
-package org.dotnet.ci.pipelines;
+package org.dotnet.ci.pipelines.scm;
 
 import jobs.generation.Utiliies
 
@@ -10,6 +10,10 @@ interface GithubPipelineScm implements PipelineScm {
     public GithubPipelineScm(String project, String branch) {
         _project = project
         _branch = branch
+    }
+
+    public String getBranch() {
+        return _branch
     }
 
     void emitScmForPR(def job, String pipelineFile) {
