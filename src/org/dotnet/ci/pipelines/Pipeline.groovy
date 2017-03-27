@@ -241,6 +241,13 @@ class Pipeline {
             _scm.emitScmForNonPR(newJob)
         }
 
+        // Emit additional parameters for the input parameters
+        parameters.each { k,v ->
+            parameters {
+                stringParam(k,v, '')
+            }
+        }
+
         // Emit the trigger
         triggerBuilder.emitTrigger(newJob)
 
