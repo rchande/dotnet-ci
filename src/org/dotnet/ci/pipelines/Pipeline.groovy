@@ -7,6 +7,7 @@ import src.org.dotnet.ci.triggers.GithubTriggerBuilder
 import src.org.dotnet.ci.triggers.GenericTriggerBuilder
 import src.org.dotnet.ci.triggers.TriggerBuilder
 import src.org.dotnet.ci.pipelines.scm.PipelineScm
+import src.org.dotnet.ci.pipelines.scm.GithubPipelineScm
 
 // Contains functionality to deal with Jenkins pipelines.
 // This class enables us to inform Jenkins about pipelines and set up triggers for those pipeline/parameter combos
