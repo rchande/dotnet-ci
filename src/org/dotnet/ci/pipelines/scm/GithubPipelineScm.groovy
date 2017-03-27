@@ -1,6 +1,6 @@
 package org.dotnet.ci.pipelines.scm;
 
-import jobs.generation.Utiliies
+import jobs.generation.Utilities
 
 class GithubPipelineScm implements PipelineScm {
     private String _project
