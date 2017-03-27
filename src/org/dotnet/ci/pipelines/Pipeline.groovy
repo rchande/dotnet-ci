@@ -176,7 +176,7 @@ class Pipeline {
         // Create the trigger event and call the helper API
         GithubTriggerBuilder builder = GithubTriggerBuilder.triggerOnPullRequest()
         builder.setGithubContext(context)
-        if (triggerPhrase != null)
+        if (triggerPhrase != null) {
             builder.setCustomTriggerPhrase(triggerPhrase)
         }
         builder.triggerOnlyOnComment()
