@@ -26,8 +26,8 @@ class Pipeline {
         _context = context
     }
 
-    public setSourceControl(PipelineScm sourceControl) {
-        _sourceControl = sourceControl
+    public setSourceControl(PipelineScm scm) {
+        _scm = scm
     }
 
     private static String getDefaultPipelineJobBaseName(String pipelineFile) {
@@ -133,8 +133,8 @@ class Pipeline {
         def newPipeline = new Pipeline(context, pipelineFile, baseJobName)
 
         // Create a new source control for the basic setup here
-        def sourceControlSettings = new GithubPipelineScm(project, branch)
-        newPipeline.setSourceControl(sourceControlSettings)
+        def scm = new GithubPipelineScm(project, branch)
+        newPipeline.setSourceControl(scm)
         return newPipeline
     }
 
