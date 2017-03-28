@@ -365,8 +365,6 @@ repos.each { repoInfo ->
                         removeAction('DISABLE')
                     }
                     removeViewAction('DELETE')
-					
-					failOnMissingPlugin()
                 }
             }
 
