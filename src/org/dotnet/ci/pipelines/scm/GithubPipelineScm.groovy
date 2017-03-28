@@ -16,6 +16,10 @@ class GithubPipelineScm implements PipelineScm {
         return _branch
     }
 
+    // Emits the source control setup for a PR job
+    // Parameters:
+    //  job - Job to emit scm for
+    //  pipelineFile - File containing the pipeline script, relative to repo root
     void emitScmForPR(def job, String pipelineFile) {
         job.with {
             // Set up parameters for this job
@@ -59,7 +63,11 @@ class GithubPipelineScm implements PipelineScm {
         }
     }
 
-    void emitScmForNonPR(def job, String pipelineFile) {
-
+    // Emits the source control setup for a non-PR job
+    // Parameters:
+    //  job - Job to emit scm for
+    //  pipelineFile - File containing the pipeline script, relative to repo root
+    void emitScmForNonPR(def job) {
+        assert false : 'NYI'        
     }
 }
