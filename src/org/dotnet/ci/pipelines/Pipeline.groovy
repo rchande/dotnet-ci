@@ -55,7 +55,7 @@ class Pipeline {
         String finalString = ''
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i)
-            // Temporary - Don't use an equals sign.  This causes issues with the CLI
+            // Temporary.  Equals is not invalid, but causes problems with CLI
             if('=?*/\\%!@#$^&|<>[]:;'.indexOf("${ch}")!=-1) {
                 finalString += '_'
             }
@@ -101,13 +101,15 @@ class Pipeline {
                 if (needsComma) {
                     finalJobName += ','
                 }
-                finalJobName += "${paramName}=${paramValue}"
+                String paramName = getValidJobNameString(k)
+                String paramValue = getValidJobNameString(v)
+
+                // Temporary - Don't use an equals sign.  This causes issues with the CLI
+                // finalJobName += "${paramName}=${paramValue}"
+                finalJobName += "${paramName}_${paramValue}"
                 needsComma = true
             }
         }
-        
-        // Ensure it's valid:
-        finalJobName = getValidJobNameString(finalJobName)
 
         // Shorten the entire job name
         final int maxElementLength = 256
