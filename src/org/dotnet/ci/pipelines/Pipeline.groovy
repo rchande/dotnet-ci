@@ -233,11 +233,11 @@ class Pipeline {
         // Job name is based off the parameters 
 
         def isPR = triggerBuilder.isPRTrigger()
-        def jobName = getPipelineJobName(parameters)
+        def jobName = getPipelineJobName(params)
         def fullJobName = Utilities.getFullJobName(jobName, isPR)
 
         // Create the standard pipeline job
-        def newJob = createStandardPipelineJob(fullJobName, isPR, parameters)
+        def newJob = createStandardPipelineJob(fullJobName, isPR, params)
 
         if (isPR) {
             // Emit the source control
