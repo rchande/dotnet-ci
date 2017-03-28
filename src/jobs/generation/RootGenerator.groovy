@@ -104,8 +104,7 @@ folder('GenPRTest') {}
         // Add a parameter which is the server name (incoming parameter to this job
         parameters {
             stringParam('ServerName', ServerName, "Server that this generator is running on")
-            stringParam('SDKImplementationBranch', sdkImplBranchName, "Suffix of branch for the metageneration that should be used for the SDK implementation")
-            stringParam('RepoListLocation', 'dotnet-ci-repolist/jobs/data/repolist.txt', "Location of the repo list relative to the workspace root.")
+            stringParam('RepoListLocation', 'dotnet-ci-repolist/data/repolist.txt', "Location of the repo list relative to the workspace root.")
         }
 
         // No concurrency, throttle among the other generators.
