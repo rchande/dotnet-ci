@@ -1,5 +1,8 @@
 package org.dotnet.ci.triggers;
 
+import jobs.generation.JobReport
+import jobs.generation.Utilities
+
 // Trigger builder for interfacing with GitHub.  This is a direct
 // copy of the jobs/generation/TriggerBuilder class.  
 class GithubTriggerBuilder implements TriggerBuilder {

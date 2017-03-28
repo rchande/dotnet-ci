@@ -1,5 +1,8 @@
 package org.dotnet.ci.triggers;
 
+import jobs.generation.JobReport
+import jobs.generation.Utilities
+
 // Covers a generic triggers in Jenkins
 // Periodic - Periodic triggers against a Git repo
 class GenericTriggerBuilder implements TriggerBuilder {
