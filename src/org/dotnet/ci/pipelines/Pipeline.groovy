@@ -241,10 +241,10 @@ class Pipeline {
 
         if (isPR) {
             // Emit the source control
-            _scm.emitScmForPR(newJob)
+            _scm.emitScmForPR(newJob, this._pipelineFile)
         }
         else {
-            _scm.emitScmForNonPR(newJob)
+            _scm.emitScmForNonPR(newJob, this._pipelineFile)
         }
 
         // Emit additional parameters for the input parameters
