@@ -389,7 +389,7 @@ repos.each { repoInfo ->
         if (isPRTest) {
             // Enable the github PR trigger, but add a trigger phrase so
             // that it doesn't build on every change.
-            Utilities.addPrivateGithubPRTriggerForBranch(jobGenerator, repoInfo.branch, jobGenerator.name, '(?i).*test\\W+ci.*', ['Microsoft'])
+            Utilities.addPrivateGithubPRTriggerForBranch(jobGenerator, repoInfo.branch, jobGenerator.name, '(?i).*test\\W+ci.*', ['Microsoft'], null)
         }
         else {
             // Enable the github push trigger.
