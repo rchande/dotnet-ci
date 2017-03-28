@@ -130,7 +130,7 @@ class Pipeline {
     //  pipelineFile - File name relative to root of the repo
     //  baseJobName - Jobs that invoke the pipeline will be created with this base name
     public static Pipeline createPipelineForGitHub(def context, String project, String branch, String pipelineFile, String baseJobName) {
-        def newPipeline = new Pipeline(pipelineFile, baseJobName)
+        def newPipeline = new Pipeline(context, pipelineFile, baseJobName)
 
         // Create a new source control for the basic setup here
         def sourceControlSettings = new GithubPipelineScm(project, branch)
