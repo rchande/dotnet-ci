@@ -229,13 +229,14 @@ class Pipeline {
         // Determine the job name
         // Job name is based off the parameters 
 
+        def isPR = triggerBuilder.isPRTrigger()
         def jobName = getPipelineJobName(parameters)
-        def fullJobName = Utilities.getFullJobName(jobName, triggerBuilder.isPRTrigger())
+        def fullJobName = Utilities.getFullJobName(jobName, isPR)
 
         // Create the standard pipeline job
-        def newJob = createStandardPipelineJob(fullJobName, parameters)
+        def newJob = createStandardPipelineJob(fullJobName, isPR, parameters)
 
-        if (triggerBuilder.isPRTrigger()) {
+        if (isPR) {
             // Emit the source control
             _scm.emitScmForPR(newJob)
         }
@@ -256,7 +257,7 @@ class Pipeline {
         return newJob
     }
 
-    private def createStandardPipelineJob(String fullJobName, boolean isPR, Map<String,String> parameters = [:]) {
+    private def createStandardPipelineJob(String fullJobName, boolean isPR, Map<String,String> parameters) {
         // Create the new pipeline job
         def newJob = _context.pipelineJob(fullJobName) {}
 
