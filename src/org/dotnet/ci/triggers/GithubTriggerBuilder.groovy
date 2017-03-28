@@ -41,7 +41,7 @@ class GithubTriggerBuilder implements TriggerBuilder {
     // context
     def setGithubContext(String context) {
         assert this._triggerType == TriggerType.PULLREQUEST
-        this.context = context
+        this._context = context
         // If the trigger phrase isn't set yet, then set it now
         if (this._triggerPhrase == null) {
             this._triggerPhrase  = "(?i).*test\\W+${context}.*"
@@ -223,7 +223,7 @@ class GithubTriggerBuilder implements TriggerBuilder {
                     }
                     extensions {
                         commitStatus {
-                            context(this.context)
+                            context(this._context)
                             updateQueuePosition(true)
                         }
                     }
@@ -243,7 +243,7 @@ class GithubTriggerBuilder implements TriggerBuilder {
                 }
             }
             
-            JobReport.Report.addPRTriggeredJob(job.name, (String[])targetBranches.toArray(), this.context, this.triggerPhrase, this._alwaysTrigger)
+            JobReport.Report.addPRTriggeredJob(job.name, (String[])targetBranches.toArray(), this._context, this._triggerPhrase, this._alwaysTrigger)
         }
         Utilities.addJobRetry(job)
     }
