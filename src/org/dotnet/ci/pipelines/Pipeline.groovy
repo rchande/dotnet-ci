@@ -278,7 +278,7 @@ class Pipeline {
 
         // Disable the job if this is a test generation
         if (GenerationSettings.isTestGeneration()) {
-            job.with {
+            newJob.with {
                 disabled(true)
             }
         }
