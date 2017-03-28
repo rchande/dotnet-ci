@@ -67,7 +67,7 @@ class GithubPipelineScm implements PipelineScm {
     // Parameters:
     //  job - Job to emit scm for
     //  pipelineFile - File containing the pipeline script, relative to repo root
-    void emitScmForNonPR(def job) {
+    void emitScmForNonPR(def job, String pipelineFile) {
         assert false : 'NYI'        
     }
 }
