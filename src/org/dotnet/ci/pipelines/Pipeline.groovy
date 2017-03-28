@@ -52,7 +52,7 @@ class Pipeline {
         String finalString
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i)
-            if('?*/\\%!@#$^&|<>[]:;'.indexOf(ch)!=-1) {
+            if('?*/\\%!@#$^&|<>[]:;'.indexOf("${ch}")!=-1) {
                 finalString += '_'
             }
             else {
