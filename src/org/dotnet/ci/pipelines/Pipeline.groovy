@@ -1,8 +1,11 @@
 package org.dotnet.ci.pipelines;
 
-import jobs.generation.Utilities
-import org.apache.commons.lang.StringUtils;
 import hudson.Util;
+import org.apache.commons.lang.StringUtils;
+
+import jobs.generation.Utilities
+import jobs.generation.GenerationSettings
+
 import org.dotnet.ci.triggers.GithubTriggerBuilder
 import org.dotnet.ci.triggers.GenericTriggerBuilder
 import org.dotnet.ci.triggers.TriggerBuilder
