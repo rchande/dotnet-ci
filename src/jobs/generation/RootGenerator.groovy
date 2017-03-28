@@ -10,6 +10,15 @@ if (differentSDKImplVersion) {
     sdkImplBranchName = differentSDKImplVersion
 }
 
+def repoListLocationBranchName = 'master'
+// But, if the SDKImplementationVersion variable was set, then that gets passed down.
+// It's the branch suffix we use, so 
+def differentRepoListLocationBranchName = binding.variables.get("RepoListLocationBranch")
+if (differentRepoListLocationBranchName) {
+    repoListLocationBranchName = differentRepoListLocationBranchName
+}
+
+
 // Create a folder for the PR generation of the dotnet-ci generation
 folder('GenPRTest') {}
 
@@ -29,8 +38,6 @@ folder('GenPRTest') {}
             daysToKeep(7)
         }
 
-        // Multi-scm.  Master pulls the repo list (kept in one place), the sdk implementation etc. is
-        // pulled from master<sdk impl suffix>
         if (isPR) {
             multiscm {
                 git {
@@ -41,7 +48,7 @@ folder('GenPRTest') {}
                         refspec('+refs/pull/*:refs/remotes/origin/pr/*')
                     }
 
-                    branch("*/master")
+                    branch("*/${repoListLocationBranchName}")
                     
                     // On older versions of DSL this is a top level git element called relativeTargetDir
                     extensions {
@@ -72,8 +79,7 @@ folder('GenPRTest') {}
                         github("dotnet/dotnet-ci")
                     }
 
-                    // Repolist is always on master
-                    branch("*/master")
+                    branch("*/${repoListLocationBranchName}")
                     
                     // On older versions of DSL this is a top level git element called relativeTargetDir
                     extensions {
@@ -99,7 +105,7 @@ folder('GenPRTest') {}
         parameters {
             stringParam('ServerName', ServerName, "Server that this generator is running on")
             stringParam('SDKImplementationBranch', sdkImplBranchName, "Suffix of branch for the metageneration that should be used for the SDK implementation")
-            stringParam('RepoListLocation', 'dotnet-ci-repolist/data/repolist.txt', "Location of the repo list relative to the workspace root.")
+            stringParam('RepoListLocation', 'dotnet-ci-repolist/jobs/data/repolist.txt', "Location of the repo list relative to the workspace root.")
         }
 
         // No concurrency, throttle among the other generators.
@@ -208,7 +214,7 @@ job('disable_jobs_in_folder') {
             remote {
                 github('dotnet/dotnet-ci')
             }
-            branch("*/master")
+            branch("*/${sdkImplBranchName}")
         }
     }
 
@@ -232,7 +238,7 @@ job('workspace_cleaner') {
             remote {
                 github('dotnet/dotnet-ci')
             }
-            branch("*/master")
+            branch("*/${sdkImplBranchName}")
         }
     }
 
@@ -256,7 +262,7 @@ job('system_cleaner') {
             remote {
                 github('dotnet/dotnet-ci')
             }
-            branch("*/master")
+            branch("*/${sdkImplBranchName}")
         }
     }
 
@@ -281,7 +287,7 @@ job('generator_cleaner') {
             remote {
                 github("dotnet/dotnet-ci")
             }
-            branch("*/master")
+            branch("*/${sdkImplBranchName}")
         }
     }
 
@@ -308,7 +314,7 @@ job('temporary_backlog_cleaner') {
             remote {
                 github("dotnet/dotnet-ci")
             }
-            branch("*/master")
+            branch("*/${sdkImplBranchName}")
         }
     }
     
