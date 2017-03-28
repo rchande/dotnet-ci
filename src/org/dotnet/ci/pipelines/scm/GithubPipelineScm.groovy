@@ -59,7 +59,7 @@ class GithubPipelineScm implements PipelineScm {
                             }
                         }
                     }
-                    scriptPath (pipelineFile)
+                    scriptPath(pipelineFile)
                 }
             }
         }
@@ -95,8 +95,8 @@ class GithubPipelineScm implements PipelineScm {
                             }
                         }
                     }
+                    scriptPath(pipelineFile)
                 }
-                scriptPath (pipelineFile)
             }
         }
     }
