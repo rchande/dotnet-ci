@@ -228,7 +228,7 @@ class Pipeline {
     //  parameter - Parameter set to run the pipeline with
     // Returns
     //  Newly created pipeline job
-    public def triggerPipelineOnEvent(TriggerBuilder triggerBuilder, Map<String,String> parameters = [:]) {
+    public def triggerPipelineOnEvent(TriggerBuilder triggerBuilder, Map<String,String> params = [:]) {
         // Determine the job name
         // Job name is based off the parameters 
 
@@ -247,10 +247,12 @@ class Pipeline {
             _scm.emitScmForNonPR(newJob, this._pipelineFile)
         }
 
-        // Emit additional parameters for the input parameters
-        parameters.each { k,v ->
-            parameters {
-                stringParam(k,v, '')
+        newJob.with {
+            // Emit additional parameters for the input parameters
+            params.each { k,v ->
+                parameters {
+                    stringParam(k,v, '')
+                }
             }
         }
 
