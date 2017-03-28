@@ -35,9 +35,9 @@ class Pipeline {
 
     private static String getDefaultPipelineJobBaseName(String pipelineFile) {
         // Strip off anything after a .
-        int lastDot = pipelineFile.indexOf('.');
+        int lastDot = pipelineFile.indexOf('.')
 
-        if (lastDot != -1) {
+        if (lastDot == -1) {
             // Has extension
             assert lastDot != 0
             return pipelineFile.substring(0, lastDot + 1)
