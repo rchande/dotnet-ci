@@ -246,7 +246,7 @@ class GithubTriggerBuilder implements TriggerBuilder {
                 }
             }
             
-            JobReport.Report.addPRTriggeredJob(job.name, (String[])targetBranches.toArray(), this._context, this._triggerPhrase, this._alwaysTrigger)
+            JobReport.Report.addPRTriggeredJob(job.name, (String[])this._targetBranches.toArray(), this._context, this._triggerPhrase, this._alwaysTrigger)
         }
         Utilities.addJobRetry(job)
     }
