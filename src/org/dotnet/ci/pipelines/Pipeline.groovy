@@ -55,7 +55,8 @@ class Pipeline {
         String finalString = ''
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i)
-            if('?*/\\%!@#$^&|<>[]:;'.indexOf("${ch}")!=-1) {
+            // Temporary - Don't use an equals sign.  This causes issues with the CLI
+            if('=?*/\\%!@#$^&|<>[]:;'.indexOf("${ch}")!=-1) {
                 finalString += '_'
             }
             else {
@@ -100,12 +101,13 @@ class Pipeline {
                 if (needsComma) {
                     finalJobName += ','
                 }
-                String paramName = getValidJobNameString(k)
-                String paramValue = getValidJobNameString(v)
                 finalJobName += "${paramName}=${paramValue}"
                 needsComma = true
             }
         }
+        
+        // Ensure it's valid:
+        finalJobName = getValidJobNameString(finalJobName)
 
         // Shorten the entire job name
         final int maxElementLength = 256
