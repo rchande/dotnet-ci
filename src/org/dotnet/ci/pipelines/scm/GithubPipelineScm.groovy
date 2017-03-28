@@ -33,27 +33,29 @@ class GithubPipelineScm implements PipelineScm {
 
             definition {
                 cpsScm {
-                    git {
-                        remote {
-                            // Sets up the project field to the non-parameterized version
-                            github(_project)
-                            // Set the refspec to be the parmeterized version
-                            refspec('${GitRefSpec}')
-                            // Set URL to the parameterized version
-                            url('${GitRepoUrl}')
+                    scm {
+                        git {
+                            remote {
+                                // Sets up the project field to the non-parameterized version
+                                github(_project)
+                                // Set the refspec to be the parmeterized version
+                                refspec('${GitRefSpec}')
+                                // Set URL to the parameterized version
+                                url('${GitRepoUrl}')
 
-                            if (_credentialsId != null) {
-                                credentials(_credentialsId)
+                                if (_credentialsId != null) {
+                                    credentials(_credentialsId)
+                                }
                             }
-                        }
 
-                        // Set the branch
-                        branch('${GitBranchOrCommit}')
-                        
-                        // Raise the clone timeout
-                        extensions {
-                            cloneOptions {
-                                timeout(30)
+                            // Set the branch
+                            branch('${GitBranchOrCommit}')
+                            
+                            // Raise the clone timeout
+                            extensions {
+                                cloneOptions {
+                                    timeout(30)
+                                }
                             }
                         }
                     }
