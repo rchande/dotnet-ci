@@ -283,7 +283,7 @@ repos.each { repoInfo ->
                         }
                     }
                     // dotnet-ci always pulls from master
-                    branch("*/${repoInfo.utilitiesRepoBranch}${SDKImplementationBranchSuffix}")
+                    branch("*/${repoInfo.utilitiesRepoBranch}")
                 }
                 //
                 git {
@@ -343,14 +343,14 @@ repos.each { repoInfo ->
             steps {
                 dsl {
                     // Loads the PreGen groovy file
-                    external("dotnet-ci/jobs/generation/PreGen.groovy")
+                    external("dotnet-ci/src/jobs/generation/PreGen.groovy")
                     // Loads DSL groovy file from the repo
                     external(Utilities.getProjectName(repoInfo.project) + "/${repoInfo.definitionScript}")
                     // Loads the PostGen groovy file
-                    external("dotnet-ci/jobs/generation/PostGen.groovy")
+                    external("dotnet-ci/src/jobs/generation/PostGen.groovy")
 
                     // Additional classpath should point to the utility repo
-                    additionalClasspath('dotnet-ci')
+                    additionalClasspath('dotnet-ci/src')
 
                     // Generate jobs relative to the seed job.
                     lookupStrategy('SEED_JOB')

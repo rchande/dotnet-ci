@@ -2,16 +2,13 @@
 // Does not use any utility functionality to make setup easy
 
 // By default we use the master branch (empty impl version)
-def sdkImplBranchSuffix = ''
+def sdkImplBranchName = 'master'
 // But, if the SDKImplementationVersion variable was set, then that gets passed down.
 // It's the branch suffix we use, so 
-def differentSDKImplVersion = binding.variables.get("SDKImplementationVersion")
+def differentSDKImplVersion = binding.variables.get("SDKImplementationBranch")
 if (differentSDKImplVersion) {
-    sdkImplBranchSuffix = "-${differentSDKImplVersion}"
+    sdkImplBranchName = differentSDKImplVersion
 }
-
-// Grab the branch name for the sdk impl.  Metagenerator is run on master. 
-def sdkImplBranchName = "master${sdkImplBranchSuffix}"
 
 // Create a folder for the PR generation of the dotnet-ci generation
 folder('GenPRTest') {}
@@ -101,8 +98,8 @@ folder('GenPRTest') {}
         // Add a parameter which is the server name (incoming parameter to this job
         parameters {
             stringParam('ServerName', ServerName, "Server that this generator is running on")
-            stringParam('SDKImplementationBranchSuffix', sdkImplBranchSuffix, "Suffix of branch for the metageneration that should be used for the SDK implementation")
-            stringParam('RepoListLocation', 'dotnet-ci-repolist/jobs/data/repolist.txt', "Location of the repo list relative to the workspace root.")
+            stringParam('SDKImplementationBranch', sdkImplBranchName, "Suffix of branch for the metageneration that should be used for the SDK implementation")
+            stringParam('RepoListLocation', 'dotnet-ci-repolist/data/repolist.txt', "Location of the repo list relative to the workspace root.")
         }
 
         // No concurrency, throttle among the other generators.
@@ -145,10 +142,10 @@ folder('GenPRTest') {}
         steps {
             dsl {
                 // Generates the generator jobs
-                external('dotnet-ci-sdk/jobs/generation/MetaGenerator.groovy')
+                external('dotnet-ci-sdk/src/jobs/generation/MetaGenerator.groovy')
 
                 // Additional classpath should point to the sdk repo
-                additionalClasspath('dotnet-ci-sdk')
+                additionalClasspath('dotnet-ci-sdk/src')
 
                 // Generate jobs relative to the seed job.
                 lookupStrategy('SEED_JOB')
@@ -216,7 +213,7 @@ job('disable_jobs_in_folder') {
     }
 
     steps {
-        systemGroovyScriptFile('jobs/scripts/disable_jobs_in_folder.groovy')
+        systemGroovyScriptFile('scripts/disable_jobs_in_folder.groovy')
     }
 }
 
@@ -244,7 +241,7 @@ job('workspace_cleaner') {
     }
 
     steps {
-        systemGroovyScriptFile('jobs/scripts/workspace_cleaner.groovy')
+        systemGroovyScriptFile('scripts/workspace_cleaner.groovy')
     }
 }
 
@@ -268,7 +265,7 @@ job('system_cleaner') {
     }
 
     steps {
-        systemGroovyScriptFile('jobs/scripts/system_cleaner.groovy')
+        systemGroovyScriptFile('scripts/system_cleaner.groovy')
     }
 }
 
@@ -294,7 +291,7 @@ job('generator_cleaner') {
     }
 
     steps {
-        systemGroovyScriptFile('jobs/scripts/generator_cleaner.groovy')
+        systemGroovyScriptFile('scripts/generator_cleaner.groovy')
     }
 }
 
@@ -320,6 +317,6 @@ job('temporary_backlog_cleaner') {
     }
 
     steps {
-        systemGroovyScriptFile('jobs/scripts/backlog_cleaner.groovy')
+        systemGroovyScriptFile('scripts/backlog_cleaner.groovy')
     }
 }
