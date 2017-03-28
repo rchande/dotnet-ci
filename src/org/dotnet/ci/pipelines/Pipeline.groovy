@@ -49,7 +49,7 @@ class Pipeline {
     // with _
     // See Jenkins.java's checkGoodName for source of the bad characters
     private String getValidJobNameString(String input) {
-        String finalString
+        String finalString = ''
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i)
             if('?*/\\%!@#$^&|<>[]:;'.indexOf("${ch}")!=-1) {
