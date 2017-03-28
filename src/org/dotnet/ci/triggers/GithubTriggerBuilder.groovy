@@ -168,7 +168,7 @@ class GithubTriggerBuilder implements TriggerBuilder {
     // Emits the trigger for a job
     // Parameters:
     //  job - Job to emit the trigger for.
-    def emitTrigger(def job) {
+    void emitTrigger(def job) {
     
         if (this._triggerType == TriggerType.PULLREQUEST) {
             this.emitPRTrigger(job)
