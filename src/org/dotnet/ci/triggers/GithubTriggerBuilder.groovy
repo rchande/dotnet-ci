@@ -234,7 +234,7 @@ class GithubTriggerBuilder implements TriggerBuilder {
                     triggerPhrase(this._triggerPhrase)
                     
                     if (this._targetBranches.size() != 0) {
-                        whiteListTargetBranches(targetBranches)
+                        whiteListTargetBranches(this._targetBranches)
                     }
                     if (this._skipBranches.size() != 0) {
                         // When this is implemented and rolled out, enable
