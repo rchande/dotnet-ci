@@ -40,7 +40,7 @@ class Pipeline {
         if (lastDot != -1) {
             // Has extension
             assert lastDot != 0
-            return pipelineFile.substring(0, lastDot + 1)
+            return pipelineFile.substring(0, lastDot)
         }
         else {
             // No extension
@@ -133,9 +133,7 @@ class Pipeline {
     //  pipelineFile - File name relative to root of the repo
     //  baseJobName - Jobs that invoke the pipeline will be created with this base name
     public static Pipeline createPipelineForGitHub(def context, String project, String branch, String pipelineFile, String baseJobName) {
-        context.out.println pipelineFile
-        context.out.println baseJobName
-        def newPipeline = new Pipeline(context, pipelineFile, baseJobName)
+        def newPipeline = new Pipeline(context, baseJobName, pipelineFile)
 
         // Create a new source control for the basic setup here
         def scm = new GithubPipelineScm(project, branch)
