@@ -70,6 +70,32 @@ class GithubPipelineScm implements PipelineScm {
     //  job - Job to emit scm for
     //  pipelineFile - File containing the pipeline script, relative to repo root
     void emitScmForNonPR(def job, String pipelineFile) {
-        assert false : 'NYI'        
+        // Set up parameters for this job
+        parameters {
+            stringParam('GitBranchOrCommit', "*/${this._branch}", 'Git branch or commit to build.  If a branch, builds the HEAD of that branch.  If a commit, then checks out that specific commit.')
+            stringParam('DOTNET_CLI_TELEMETRY_PROFILE', "IsInternal_CIServer;${_project}", 'This is used to differentiate the internal CI usage of CLI in telemetry.  This gets exposed in the environment and picked up by the CLI product.')
+        }
+
+        job.with {
+            cpsScm {
+                scm {
+                    git {
+                        remote {
+                            github(project)
+                        }
+
+                        branch('${GitBranchOrCommit}')
+                        
+                        // Raise up the timeout
+                        extensions {
+                            cloneOptions {
+                                timeout(30)
+                            }
+                        }
+                    }
+                }
+            }
+            scriptPath (pipelineFile)
+        }
     }
 }
