@@ -28,6 +28,14 @@ def deleteDisabled(items, calculateOnly) {
     def genPRTestCount = 0
     for (item in items) {
         if (item.class.canonicalName != 'com.cloudbees.hudson.plugins.folder.Folder') {
+            // ISSUE-These exclusions are related to those projects that aren't derived from
+            // AbstractProject.  The WorkflowJob exclusion is fixed in newer versions of plugins.
+            if (item.class.canonicalName == 'org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject') {
+                // Workflow jobs don't derive from AbstractProject, so cannot be disabled.  In this case, print the potential
+                // orphaned item and continue
+                println (item.fullName + " cannot be deleted or disabled (is workflow job)!")
+                continue
+            }
             // Delete everything that's disabled
             boolean doDelete = item.disabled
             // Also delete if it's not disabled, but is somewhere under GenPRTest and is NOT a generator
