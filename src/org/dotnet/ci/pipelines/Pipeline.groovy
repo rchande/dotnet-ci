@@ -268,9 +268,7 @@ class Pipeline {
 
     private def createStandardPipelineJob(String fullJobName, boolean isPR, Map<String,String> parameters) {
         // Create the new pipeline job
-        def newJob = _context.pipelineJob(fullJobName) {
-            disabled()
-        }
+        def newJob = _context.pipelineJob(fullJobName) {}
 
         // Most options are set up in the pipeline itself.
         // We really only need to set up the retention policy
