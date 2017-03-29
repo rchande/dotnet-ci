@@ -28,7 +28,8 @@ def deleteDisabled(items, calculateOnly) {
     def genPRTestCount = 0
     for (item in items) {
         if (item.class.canonicalName != 'com.cloudbees.hudson.plugins.folder.Folder') {
-            if (item.class.canonicalName == 'org.jenkinsci.plugins.workflow.job.WorkflowJob') {
+            if (item.class.canonicalName == 'org.jenkinsci.plugins.workflow.job.WorkflowJob' ||
+                item.class.canonicalName == 'org.jenkinsci.plugins.workflow.multibranch.WorkflowMultiBranchProject') {
                 // Workflow jobs don't derive from AbstractProject, so cannot be disabled.  In this case, print the potential
                 // orphaned item and continue
                 println (item.fullName + " cannot be deleted or disabled (is workflow job)!")
