@@ -58,7 +58,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                 else if (isFinished) {
                     state = 3
                     // Check the results
-                    setPRStatus(context, "PENDING", detailsUrl, "Finished")
+                    setPRStatus(context, "SUCCESS", detailsUrl, "Finished")
                     return true
                 }
                 return false

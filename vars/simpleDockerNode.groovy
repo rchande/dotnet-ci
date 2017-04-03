@@ -26,17 +26,15 @@ def call(String dockerImageName, Closure body) {
 //  body - Closure, see example
 def call(String dockerImageName, String hostVersion, Closure body) {
     node (Agents.getDockerAgentLabel(hostVersion)) {
-        // Wrap in a try finally that cleans up the workspace
-        try {
-            // Wrap in the default timeout of 120 mins
-            timeout(120) {
-                docker.image(dockerImageName).inside {
+        timeout(120) {
+            docker.image(dockerImageName).inside {
+                try {
                     body()
                 }
+                finally {
+                    step([$class: 'WsCleanup'])
+                }
             }
-        }
-        finally {
-            step([$class: 'WsCleanup'])
         }
     }
 }
