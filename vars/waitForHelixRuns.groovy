@@ -16,7 +16,8 @@ import groovy.json.JsonSlurper
 //      QueueTimeUtc
 //  }
 // ]
-def call (def helixRunsBlob) {
+
+def call (def helixRunsBlob, String prStatusPrefix) {
     // Parallel stages that wait for the runs.
     def helixRunTasks = [:]
     
@@ -30,6 +31,7 @@ def call (def helixRunsBlob) {
         def currentRun = helixRunsBlob[i];
         def queueId = currentRun['QueueId']
         def correlationId = currentRun['CorrelationId']
+        def context = "${prStatusPrefix} - ${queueId}"
         helixRunTasks[queueId] = {
 
             // Wait until the Helix runs complete.
@@ -46,18 +48,18 @@ def call (def helixRunsBlob) {
                 if (isPending && state == 0) {
                     echo "Changeing to waiting"
                     state = 1
-                    setPRStatus(queueId, "PENDING", "", "Waiting")
+                    setPRStatus(context, "PENDING", "", "Waiting")
                 }
                 else if (isRunning && state < 2) {
                     echo "Changeing to running"
                     state = 2
-                    setPRStatus(queueId, "PENDING", "https://ci.dot.net", "Started")
+                    setPRStatus(context, "PENDING", "https://ci.dot.net", "Started")
                 }
                 else if (isFinished) {
                     echo "Changeing to finished"
                     state = 3
                     // Check the results
-                    setPRStatus(queueId, "PENDING", "https://ci.dot.net", "Finished")
+                    setPRStatus(context, "PENDING", "https://ci.dot.net", "Finished")
                     return true
                 }
                 return false
