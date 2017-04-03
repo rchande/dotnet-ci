@@ -36,7 +36,8 @@ def call (def helixRunsBlob, String prStatusPrefix) {
             // Wait until the Helix runs complete.
             waitUntil (minRecurrencePeriod: 60, maxRecurrencePeriod: 60, unit: 'SECONDS') {
                 // Check the state against the Helix API
-                def response = httpRequest "https://helix.dot.net/api/jobs/${correlationId}/details"
+                def detailsUrl = "https://helix.dot.net/api/jobs/${correlationId}/details"
+                def response = httpRequest detailsUrl
                 def content = (new JsonSlurper()).parseText(response.content)
 
                 // If the job info hasn't been propagated to the helix api, then we need to wait around.
@@ -54,12 +55,12 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                 }
                 else if (isRunning && state < 2) {
                     state = 2
-                    setPRStatus(context, "PENDING", "https://ci.dot.net", "Started")
+                    setPRStatus(context, "PENDING", detailsUrl, "Started")
                 }
                 else if (isFinished) {
                     state = 3
                     // Check the results
-                    setPRStatus(context, "PENDING", "https://ci.dot.net", "Finished")
+                    setPRStatus(context, "PENDING", detailsUrl, "Finished")
                     return true
                 }
                 return false
