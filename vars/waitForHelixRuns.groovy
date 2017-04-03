@@ -32,7 +32,8 @@ def call (def helixRunsBlob) {
         def correlationId = currentRun['CorrelationId']
         helixRunTasks[queueId] = {
 
-            waitUntil {
+            // Wait until the Helix runs complete.
+            waitUntil (minRecurrencePeriod: 30, maxRecurrencePeriod: 60, unit: 'SECONDS') {
                 // Check the state against the Helix API
                 def response = httpRequest "https://helix.dot.net/api/jobs/${correlationId}/details"
                 def content = (new JsonSlurper()).parseText(response.content)
