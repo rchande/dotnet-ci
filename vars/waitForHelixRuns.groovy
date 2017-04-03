@@ -20,12 +20,6 @@ import groovy.json.JsonSlurper
 def call (def helixRunsBlob, String prStatusPrefix) {
     // Parallel stages that wait for the runs.
     def helixRunTasks = [:]
-    
-    // State to minimize status updates.
-    // 0 = Not yet updated
-    // 1 = Pending updated
-    // 2 = Started updated
-    int state = 0;
 
     for (int i = 0; i < helixRunsBlob.size(); i++) {
         def currentRun = helixRunsBlob[i];
@@ -33,30 +27,36 @@ def call (def helixRunsBlob, String prStatusPrefix) {
         def correlationId = currentRun['CorrelationId']
         def context = "${prStatusPrefix} - ${queueId}"
         helixRunTasks[queueId] = {
+            // State to minimize status updates.
+            // 0 = Not yet updated/started
+            // 1 = Pending updated
+            // 2 = Started updated
+            int state = 0;
 
             // Wait until the Helix runs complete.
-            waitUntil (minRecurrencePeriod: 30, maxRecurrencePeriod: 60, unit: 'SECONDS') {
+            waitUntil (minRecurrencePeriod: 60, maxRecurrencePeriod: 60, unit: 'SECONDS') {
                 // Check the state against the Helix API
                 def response = httpRequest "https://helix.dot.net/api/jobs/${correlationId}/details"
                 def content = (new JsonSlurper()).parseText(response.content)
-                echo "${content.WorkItems.Unscheduled} - ${content.WorkItems.Waiting} - ${content.WorkItems.Running} - ${content.WorkItems.Finished}"
-                boolean isPending = content.WorkItems.Running == 0 && content.WorkItems.Finished == 0
-                boolean isFinished = content.WorkItems.Unscheduled == 0 && content.WorkItems.Waiting == 0 && content.WorkItems.Running == 0
-                boolean isRunning = !isPending && !isFinished
+
+                // If the job info hasn't been propagated to the helix api, then we need to wait around.
+                boolean isNotStarted = content.JobList == null
+                boolean isPending = !isNotStarted && content.WorkItems.Running == 0 && content.WorkItems.Finished == 0
+                boolean isFinished = !isNotStarted && content.WorkItems.Unscheduled == 0 && content.WorkItems.Waiting == 0 && content.WorkItems.Running == 0
+                boolean isRunning = !isNotStarted && !isPending && !isFinished
                 content = null
 
+                echo "Current state is ${state}"
+
                 if (isPending && state == 0) {
-                    echo "Changeing to waiting"
                     state = 1
                     setPRStatus(context, "PENDING", "", "Waiting")
                 }
                 else if (isRunning && state < 2) {
-                    echo "Changeing to running"
                     state = 2
                     setPRStatus(context, "PENDING", "https://ci.dot.net", "Started")
                 }
                 else if (isFinished) {
-                    echo "Changeing to finished"
                     state = 3
                     // Check the results
                     setPRStatus(context, "PENDING", "https://ci.dot.net", "Finished")
