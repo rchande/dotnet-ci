@@ -37,20 +37,24 @@ def call (def helixRunsBlob) {
                 // Check the state against the Helix API
                 def response = httpRequest "https://helix.dot.net/api/jobs/${correlationId}/details"
                 def content = (new JsonSlurper()).parseText(response.content)
+                echo "${content.WorkItems.Unscheduled} - ${content.WorkItems.Waiting} - ${content.WorkItems.Running} - ${content.WorkItems.Finished}"
                 boolean isPending = content.WorkItems.Running == 0 && content.WorkItems.Finished == 0
                 boolean isFinished = content.WorkItems.Unscheduled == 0 && content.WorkItems.Waiting == 0 && content.WorkItems.Running == 0
                 boolean isRunning = !isPending && !isFinished
                 content = null
 
                 if (isPending && state == 0) {
+                    echo "Changeing to waiting"
                     state = 1
                     setPRStatus(queueId, "PENDING", "", "Waiting")
                 }
                 else if (isRunning && state < 2) {
+                    echo "Changeing to running"
                     state = 2
                     setPRStatus(queueId, "PENDING", "https://ci.dot.net", "Started")
                 }
                 else if (isFinished) {
+                    echo "Changeing to finished"
                     state = 3
                     // Check the results
                     setPRStatus(queueId, "PENDING", "https://ci.dot.net", "Finished")
