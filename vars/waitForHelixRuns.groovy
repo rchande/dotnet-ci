@@ -47,8 +47,6 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                 boolean isRunning = !isNotStarted && !isPending && !isFinished
                 content = null
 
-                echo "Current state is ${state}"
-
                 if (isPending && state == 0) {
                     state = 1
                     setPRStatus(context, "PENDING", "", "Waiting")
