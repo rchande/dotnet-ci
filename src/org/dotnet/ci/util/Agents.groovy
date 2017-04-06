@@ -49,6 +49,8 @@ class Agents {
         def machineMap    = [
                             'Ubuntu14.04' :
                                 [
+                                // Generic version label
+                                '':'auto-ubuntu1404-20160211',
                                 // Specific auto-image label
                                 '201626':'auto-ubuntu1404-201626',
                                 // Contains an updated version of mono
@@ -71,6 +73,8 @@ class Agents {
                                 ],
                             'Ubuntu15.10' :
                                 [
+                                // Generic version label
+                                '' : 'auto-ubuntu1510-20160307',
                                 // Latest auto image.
                                 'latest':'auto-ubuntu1510-20160307',
                                 // For outerloop runs.
@@ -78,14 +82,8 @@ class Agents {
                                 ],
                             'Ubuntu16.04' :
                                 [
-                                // Explicit versions:
-
                                 // Contains auto-ubuntu1604-20160803 + gdb + mono 4.6.2.16
                                 '20170109':'ubuntu1604-20170109',
-                                '20170216':'ubuntu1604-20170216',
-
-                                // Aliases:
-
                                 // Latest auto image.
                                 'latest':'ubuntu1604-20170216',
                                 // auto-ubuntu1604-20160510 + docker.
@@ -107,6 +105,8 @@ class Agents {
                                 ],
                             'OSX10.11' :
                                 [
+                                // Generic version label
+                                '' : 'mac',
                                 // Latest auto image.
                                 'latest':'mac',
                                 // For elevated runs
@@ -115,6 +115,8 @@ class Agents {
                             // El Capitan
                             'OSX10.11' :
                                 [
+                                // Generic version label
+                                '' : 'osx-10.11',
                                 // Latest auto image.
                                 'latest':'osx-10.11',
                                 // For elevated runs
@@ -123,6 +125,8 @@ class Agents {
                             // Sierra
                             'OSX10.12' :
                                 [
+                                // Generic version label
+                                '' : 'osx-10.12',
                                 // Latest auto image.
                                 'latest':'osx-10.12',
                                 // For elevated runs
@@ -170,6 +174,8 @@ class Agents {
                                 'latest-dev15-internal':'auto-win2012-20160707-internal',
                                 // For elevated runs
                                 'latest-elevated':'win2012-20170303-elevated',
+								// For arm64 builds
+                                'latest-arm64':'win2012-20170328',
                                 // For perf runs
                                 'latest-perf':'windows-perf-internal',
                                 // Win2016
@@ -209,6 +215,7 @@ class Agents {
                                 ],
                             'RHEL7.2' :
                                 [
+                                '' : 'auto-rhel72-20160211',
                                 // Latest auto image.
                                 'latest':'auto-rhel72-20160211',
                                 // For outerloop runs.
@@ -225,6 +232,7 @@ class Agents {
                                 ],
                             'OpenSUSE13.2' :
                                 [
+                                '' : 'auto-suse132-20160315',
                                 // Latest auto image.
                                 'latest':'auto-suse132-20160315',
                                 // For outerloop runs
@@ -239,6 +247,7 @@ class Agents {
                                 ],
                             'Debian8.2' :
                                 [
+                                '' : 'auto-deb82-20160323',
                                 '20160323':'auto-deb82-20160323',
                                 // Latest auto image.
                                 'latest':'auto-deb82-20160323'
@@ -252,6 +261,7 @@ class Agents {
                                 ],
                            'Fedora23' :
                                 [
+                                '' : 'auto-fedora23-20160622',
                                 // Latest auto image.
                                 'latest':'auto-fedora23-20160622',
                                 // For outerloop runs
@@ -277,7 +287,8 @@ class Agents {
                                 // generators.
                             'Generators' :
                                 [
-                                'latest':'!windowsnano16 && !arm64 && !performance'
+                                '' : '!windowsnano16',
+                                'latest':'!windowsnano16 && !performance && !dtap'
                                 ]
                             ]
         def versionLabelMap = machineMap.get(osName, null)
