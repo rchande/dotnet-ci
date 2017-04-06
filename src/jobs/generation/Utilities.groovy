@@ -950,8 +950,10 @@ class Utilities {
         job.with {
             notifications {
                 endPoints.each { endPoint ->
-                    endpoint(endPoint) {
+                    // Use the secret endpoint to source the endpoint URL from credentials
+                    secretEndpoint(endPoint) {
                         event('all')
+                        retries(3)
                     }
                 }
             }
