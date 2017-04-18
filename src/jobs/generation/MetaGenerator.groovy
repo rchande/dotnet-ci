@@ -344,30 +344,35 @@ repos.each { repoInfo ->
             // Add in the job generator logic
 
             steps {
-                dsl {
-                    // Loads the PreGen groovy file
-                    external("dotnet-ci/src/jobs/generation/PreGen.groovy")
-                    // Loads DSL groovy file from the repo
-                    external(Utilities.getProjectName(repoInfo.project) + "/${repoInfo.definitionScript}")
-                    // Loads the PostGen groovy file
-                    external("dotnet-ci/src/jobs/generation/PostGen.groovy")
+                jobDsl {
+                    String dsltargets = "dotnet-ci/src/jobs/generation/PreGen.groovy"
+                    dslTargets += "\n${Utilities.getProjectName(repoInfo.project)}/${repoInfo.definitionScript}"
+                    dslTargets += "\ndotnet-ci/src/jobs/generation/PostGen.groovy"
+
+                    targets(dsltargets)
 
                     // Additional classpath should point to the utility repo
                     additionalClasspath('dotnet-ci/src')
 
+                    // Fail the build if a plugin is missing
+                    failOnMissingPlugin(true)
+
                     // Generate jobs relative to the seed job.
                     lookupStrategy('SEED_JOB')
+
+                    // Run in the sandbox
+                    sandbox(true)
 
                     // PR tests should do nothing with the other jobs.
                     // Non-PR tests should disable the jobs, which will get cleaned
                     // up later.
                     if (isPRTest) {
-                        removeAction('IGNORE')
+                        removedJobAction('IGNORE')
                     }
                     else {
-                        removeAction('DISABLE')
+                        removedJobAction('DISABLE')
                     }
-                    removeViewAction('DELETE')
+                    removedViewAction('DELETE')
                 }
             }
 

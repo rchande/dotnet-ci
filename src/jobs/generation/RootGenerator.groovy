@@ -168,7 +168,7 @@ folder('GenPRTest') {}
             // jobs generated in the previous step will be disabled.
 
             if (isPR) {
-                dsl {
+                jobDsl {
                      text('// Generate no jobs so the previously generated jobs are disabled')
 
                      // Generate jobs relative to the seed job.
