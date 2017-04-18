@@ -147,17 +147,23 @@ folder('GenPRTest') {}
 
         // Step is "process job dsls"
         steps {
-            dsl {
+            jobDsl {
                 // Generates the generator jobs
-                external('dotnet-ci-sdk/src/jobs/generation/MetaGenerator.groovy')
+                targets('dotnet-ci-sdk/src/jobs/generation/MetaGenerator.groovy')
 
                 // Additional classpath should point to the sdk repo
                 additionalClasspath('dotnet-ci-sdk/src')
 
+                // Fail the build if a plugin is missing
+                failOnMissingPlugin(true)
+
                 // Generate jobs relative to the seed job.
                 lookupStrategy('SEED_JOB')
 
-                removeAction('DISABLE')
+                // Run in the sandbox
+                sandbox(true)
+
+                removedJobAction('DISABLE')
                 removeViewAction('DELETE')
             }
             
@@ -169,12 +175,15 @@ folder('GenPRTest') {}
 
             if (isPR) {
                 jobDsl {
-                     text('// Generate no jobs so the previously generated jobs are disabled')
+                     scriptText('// Generate no jobs so the previously generated jobs are disabled')
+                     useScriptText(true)
 
                      // Generate jobs relative to the seed job.
                      lookupStrategy('SEED_JOB')
                      removeAction('DISABLE')
                      removeViewAction('DELETE')
+
+                     sandbox(true)
                 }
             }
         }
