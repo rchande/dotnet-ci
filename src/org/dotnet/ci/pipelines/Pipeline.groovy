@@ -272,14 +272,7 @@ class Pipeline {
 
         // Most options are set up in the pipeline itself.
         // We really only need to set up the retention policy
-        Utilities.addRetentionPolicy(newJob, isPR)
-
-        // Disable the job if this is a test generation
-        if (GenerationSettings.isTestGeneration()) {
-            newJob.with {
-                disabled(true)
-            }
-        }
+        Utilities.addStandardOptions(newJob, isPR)
 
         // Return the new job
         return newJob
