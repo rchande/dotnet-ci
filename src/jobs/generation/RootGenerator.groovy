@@ -164,7 +164,7 @@ folder('GenPRTest') {}
                 sandbox(true)
 
                 removedJobAction('DISABLE')
-                removeViewAction('DELETE')
+                removedViewAction('DELETE')
             }
             
             // If this is a PR test job, we don't want the generated jobs
@@ -180,8 +180,8 @@ folder('GenPRTest') {}
 
                      // Generate jobs relative to the seed job.
                      lookupStrategy('SEED_JOB')
-                     removeAction('DISABLE')
-                     removeViewAction('DELETE')
+                     removedJobAction('DISABLE')
+                     removedViewAction('DELETE')
 
                      sandbox(true)
                 }
