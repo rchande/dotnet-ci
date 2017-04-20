@@ -346,8 +346,8 @@ repos.each { repoInfo ->
             steps {
                 jobDsl {
                     String dsltargets = "dotnet-ci/src/jobs/generation/PreGen.groovy"
-                    dslTargets += "\n${Utilities.getProjectName(repoInfo.project)}/${repoInfo.definitionScript}"
-                    dslTargets += "\ndotnet-ci/src/jobs/generation/PostGen.groovy"
+                    dsltargets += "\n${Utilities.getProjectName(repoInfo.project)}/${repoInfo.definitionScript}"
+                    dsltargets += "\ndotnet-ci/src/jobs/generation/PostGen.groovy"
 
                     targets(dsltargets)
 
