@@ -32,9 +32,9 @@ def call(String dockerImageName, String hostVersion, Closure body) {
             retry (3) {
                 dockerImage.pull()
             }
-            dockerImage.withRun() {
+            dockerImage.inside() {
                 try {
-                    sh 'echo Running inside docker container, HOME=$HOME, as user $(id)'
+                    sh 'env'
                     body()
                 }
                 finally {
