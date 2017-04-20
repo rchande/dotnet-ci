@@ -228,8 +228,22 @@ job('disable_jobs_in_folder') {
         }
     }
 
+    // We stream from the workspace since in the groovy 2.0 plugin, the scripts
+    // read from disk always execute in the sandbox. This is not the case with inline scripts.
+    // This is a bug.  https://issues.jenkins-ci.org/browse/JENKINS-43700
     steps {
-        systemGroovyScriptFile('scripts/disable_jobs_in_folder.groovy')
+        // Rather
+        systemGroovy {
+            source {
+                stringSystemScriptSource {
+                    script {
+                        script (readFileFromWorkspace('scripts/disable_jobs_in_folder.groovy'))
+                        // Don't execute in sandbox
+                        sandbox (false)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -256,8 +270,22 @@ job('workspace_cleaner') {
         cron('0 0 * * *')
     }
 
+    // We stream from the workspace since in the groovy 2.0 plugin, the scripts
+    // read from disk always execute in the sandbox. This is not the case with inline scripts.
+    // This is a bug.  https://issues.jenkins-ci.org/browse/JENKINS-43700
     steps {
-        systemGroovyScriptFile('scripts/workspace_cleaner.groovy')
+        // Rather
+        systemGroovy {
+            source {
+                stringSystemScriptSource {
+                    script {
+                        script (readFileFromWorkspace('scripts/workspace_cleaner.groovy'))
+                        // Don't execute in sandbox
+                        sandbox (false)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -280,8 +308,22 @@ job('system_cleaner') {
         cron('0 0 * * *')
     }
 
+    // We stream from the workspace since in the groovy 2.0 plugin, the scripts
+    // read from disk always execute in the sandbox. This is not the case with inline scripts.
+    // This is a bug.  https://issues.jenkins-ci.org/browse/JENKINS-43700
     steps {
-        systemGroovyScriptFile('scripts/system_cleaner.groovy')
+        // Rather
+        systemGroovy {
+            source {
+                stringSystemScriptSource {
+                    script {
+                        script (readFileFromWorkspace('scripts/system_cleaner.groovy'))
+                        // Don't execute in sandbox
+                        sandbox (false)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -306,8 +348,22 @@ job('generator_cleaner') {
         stringParam('GeneratorJobName', '')
     }
 
+    // We stream from the workspace since in the groovy 2.0 plugin, the scripts
+    // read from disk always execute in the sandbox. This is not the case with inline scripts.
+    // This is a bug.  https://issues.jenkins-ci.org/browse/JENKINS-43700
     steps {
-        systemGroovyScriptFile('scripts/generator_cleaner.groovy')
+        // Rather
+        systemGroovy {
+            source {
+                stringSystemScriptSource {
+                    script {
+                        script (readFileFromWorkspace('scripts/generator_cleaner.groovy'))
+                        // Don't execute in sandbox
+                        sandbox (false)
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -332,7 +388,21 @@ job('temporary_backlog_cleaner') {
         cron('@hourly')
     }
 
+    // We stream from the workspace since in the groovy 2.0 plugin, the scripts
+    // read from disk always execute in the sandbox. This is not the case with inline scripts.
+    // This is a bug.  https://issues.jenkins-ci.org/browse/JENKINS-43700
     steps {
-        systemGroovyScriptFile('scripts/backlog_cleaner.groovy')
+        // Rather
+        systemGroovy {
+            source {
+                stringSystemScriptSource {
+                    script {
+                        script (readFileFromWorkspace('scripts/backlog_cleaner.groovy'))
+                        // Don't execute in sandbox
+                        sandbox (false)
+                    }
+                }
+            }
+        }
     }
 }
