@@ -32,9 +32,8 @@ def call(String dockerImageName, String hostVersion, Closure body) {
             retry (3) {
                 dockerImage.pull()
             }
-            dockerImage.inside() {
+            dockerImage.inside('-u 0:0') {
                 try {
-                    sh 'env'
                     body()
                 }
                 finally {
