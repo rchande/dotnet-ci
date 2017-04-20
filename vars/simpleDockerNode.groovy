@@ -27,8 +27,14 @@ def call(String dockerImageName, Closure body) {
 def call(String dockerImageName, String hostVersion, Closure body) {
     node (Agents.getDockerAgentLabel(hostVersion)) {
         timeout(120) {
-            docker.image(dockerImageName).inside {
+            def dockerImage = docker.image(dockerImageName)
+            // Force pull.
+            retry (3) {
+                dockerImage.pull()
+            }
+            dockerImage.inside('-e HOME=/home/') {
                 try {
+                    echo 'Running inside docker container, HOME=${HOME}'
                     body()
                 }
                 finally {
