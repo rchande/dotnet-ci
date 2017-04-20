@@ -32,7 +32,7 @@ def call(String dockerImageName, String hostVersion, Closure body) {
             retry (3) {
                 dockerImage.pull()
             }
-            dockerImage.inside('-e HOME=/home/') {
+            dockerImage.inside() {
                 try {
                     sh 'echo Running inside docker container, HOME=$HOME'
                     body()
