@@ -49,7 +49,7 @@ def call(String dockerImageName, String hostVersion, Closure body) {
                     // has exited.  Outside the container, we won't have permissions to delete the
                     // mapped files (they will be root).
                     echo "Cleaning workspace ${WORKSPACE}"
-                    dir(WORKSPACE) {deleteDir()}
+                    sh 'rm -rf *'
                 }
             }
         }
