@@ -47,9 +47,14 @@ def call(String dockerImageName, String hostVersion, Closure body) {
                     // However in the latest versions, it utilizes the AsyncResourceDisposer.
                     // This means that we won't attempt to delete the workspace until after the container
                     // has exited.  Outside the container, we won't have permissions to delete the
-                    // mapped files (they will be root).
+                    // mapped files (they will be root). Instead, we use rm -rf * and then workspace cleanup.
+                    // This could potentially fail if there were too many files in the workspace dir (many thousands)
+                    // but this is unlikely.  This will probably eventually be fixed on the workspace cleanup
+                    // side of things, so don't worry about it too much
                     echo "Cleaning workspace ${WORKSPACE}"
                     sh 'rm -rf *'
+                    // Use the workspace cleaner now.
+                    step([$class: 'WsCleanup'])
                 }
             }
         }
