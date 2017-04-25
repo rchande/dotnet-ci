@@ -102,7 +102,9 @@ class Pipeline {
                     finalJobName += ','
                 }
                 String paramName = getValidJobNameString(k)
-                String paramValue = getValidJobNameString(v)
+                // This could be a boolean or string
+                assert v instanceof String || v instanceof boolean : "Unknown type of value ${v} for parameter ${k} used.  Please use string or boolean (currently ${v.getClass()}"
+                String paramValue = getValidJobNameString(v.toString())
 
                 // Temporary - Don't use an equals sign.  This causes issues with the CLI
                 // finalJobName += "${paramName}=${paramValue}"
