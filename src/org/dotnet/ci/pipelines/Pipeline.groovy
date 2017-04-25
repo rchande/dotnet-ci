@@ -259,7 +259,7 @@ class Pipeline {
                 parameters {
                     // The type of the parameter is dependent on the value.  If v is a boolean, then 
                     // make a boolean parameter.  Otherwise string
-                    if (v instanceof boolean) {
+                    if (v instanceof Boolean) {
                         booleanParam(k,v, '')
                     }
                     else {
