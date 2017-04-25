@@ -87,7 +87,7 @@ class Pipeline {
 
     // Determines a full job name for a pipeline job from the base job and parameter set
     // 
-    private String getPipelineJobName(Map<String,String> parameters = [:]) {
+    private String getPipelineJobName(Map<String,Object> parameters = [:]) {
         // Take the base job name and append '-'' if there are any parameters
         // If parameters, walk the parameter list.  Append X=Y forms, replacing any
         // invalid characters with _, separated by comma
@@ -149,7 +149,7 @@ class Pipeline {
     // Parameters:
     //  context - The context that appears for the status check in the Github UI
     //  parameter - Optional set of key/value pairs of string parameters that will be passed to the pipeline
-    public def triggerPipelineOnEveryGithubPR(String context, Map<String,String> parameters = [:]) {
+    public def triggerPipelineOnEveryGithubPR(String context, Map<String,Object> parameters = [:]) {
         // Create the default trigger phrase based on the context
         return triggerPipelineOnEveryGithubPR(context, null, parameters)
     }
@@ -159,7 +159,7 @@ class Pipeline {
     //  context - The context that appears for the status check in the Github UI
     //  triggerPhrase - The trigger phrase that can relaunch the pipeline
     //  parameters - Optional set of key/value pairs of string parameters that will be passed to the pipeline
-    public def triggerPipelineOnEveryGithubPR(String context, String triggerPhrase, Map<String,String> parameters = [:]) {
+    public def triggerPipelineOnEveryGithubPR(String context, String triggerPhrase, Map<String,Object> parameters = [:]) {
         // Create a trigger builder and pass it to the generic triggerPipelineOnEvent
         GithubTriggerBuilder builder = GithubTriggerBuilder.triggerOnPullRequest()
         builder.setGithubContext(context)
@@ -181,7 +181,7 @@ class Pipeline {
     //  context - The context that appears for the status check in the Github UI
     //  triggerPhrase - The trigger phrase that can relaunch the pipeline
     //  parameters - Optional set of key/value pairs of string parameters that will be passed to the pipeline
-    public def triggerPipelineOnGithubPRComment(String context, String triggerPhrase, Map<String,String> parameters = [:]) {
+    public def triggerPipelineOnGithubPRComment(String context, String triggerPhrase, Map<String,Object> parameters = [:]) {
         // Create the trigger event and call the helper API
         GithubTriggerBuilder builder = GithubTriggerBuilder.triggerOnPullRequest()
         builder.setGithubContext(context)
@@ -200,7 +200,7 @@ class Pipeline {
     //  context - The context to show on GitHub + trigger phrase that will launch the job
     // Returns:
     //  Newly created pipeline job
-    public def triggerPipelineOnGithubPRComment(String context, Map<String,String> parameters = [:]) {
+    public def triggerPipelineOnGithubPRComment(String context, Map<String,Object> parameters = [:]) {
         // Create the default trigger phrase based on the context
         return triggerPipelineOnGithubPRComment(context, null, parameters)
     }
@@ -210,7 +210,7 @@ class Pipeline {
     //  parameters - Parameters to pass to the pipeline on a push
     // Returns:
     //  Newly created job
-    public def triggerPipelineOnGithubPush(Map<String,String> parameters = [:]) {
+    public def triggerPipelineOnGithubPush(Map<String,Object> parameters = [:]) {
         GithubTriggerBuilder builder = GithubTriggerBuilder.triggerOnCommit()
 
         // Call the generic API
@@ -219,7 +219,7 @@ class Pipeline {
 
     // Triggers a pipeline periodically, if changes have been made to the
     // source control in question.
-    public def triggerPipelinePeriodically(String cronString, Map<String,String> parameters = [:]) {
+    public def triggerPipelinePeriodically(String cronString, Map<String,Object> parameters = [:]) {
         GenericTriggerBuilder builder = GenericTriggerBuilder.triggerPeriodically(cronString)
 
         // Call the generic API
@@ -232,7 +232,7 @@ class Pipeline {
     //  parameter - Parameter set to run the pipeline with
     // Returns
     //  Newly created pipeline job
-    public def triggerPipelineOnEvent(TriggerBuilder triggerBuilder, Map<String,String> params = [:]) {
+    public def triggerPipelineOnEvent(TriggerBuilder triggerBuilder, Map<String,Object> params = [:]) {
         // Determine the job name
         // Job name is based off the parameters 
 
@@ -255,7 +255,14 @@ class Pipeline {
             // Emit additional parameters for the input parameters
             params.each { k,v ->
                 parameters {
-                    stringParam(k,v, '')
+                    // The type of the parameter is dependent on the value.  If v is a boolean, then 
+                    // make a boolean parameter.  Otherwise string
+                    if (v instanceof boolean) {
+                        booleanParam(k,v, '')
+                    }
+                    else {
+                        stringParam(k,v, '')
+                    }
                 }
             }
         }
@@ -266,7 +273,7 @@ class Pipeline {
         return newJob
     }
 
-    private def createStandardPipelineJob(String fullJobName, boolean isPR, Map<String,String> parameters) {
+    private def createStandardPipelineJob(String fullJobName, boolean isPR, Map<String,Object> parameters) {
         // Create the new pipeline job
         def newJob = _context.pipelineJob(fullJobName) {}
 
