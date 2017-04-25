@@ -29,21 +29,26 @@ dotnet/cli branch=rel/1.0.0-preview2 server=dotnet-ci
 dotnet/cli branch=rel/1.0.0-preview1 server=dotnet-ci
 dotnet/cli branch=rel/1.0.0 server=dotnet-ci
 dotnet/cli branch=rel/1.0.1 server=dotnet-ci
+dotnet/cli branch=release/2.0.0 server=dotnet-ci
 dotnet/CliCommandLineParser branch=master server=dotnet-ci
 dotnet/xliff-tasks branch=master server=dotnet-ci
 dotnet/cli-migrate branch=master server=dotnet-ci
 dotnet/core-setup branch=master server=dotnet-ci
 dotnet/core-setup branch=release/1.0.0 server=dotnet-ci
 dotnet/core-setup branch=release/1.1.0 server=dotnet-ci
+dotnet/core-setup branch=release/2.0.0 server=dotnet-ci
 dotnet/codeformatter branch=master server=dotnet-ci2
 dotnet/coreclr branch=master server=dotnet-ci
 dotnet/coreclr branch=master server=dotnet-ci2 definitionScript=perf.groovy subFolder=perf
+jorive/coreclr branch=dev/baseline-with-new-api server=dotnet-ci2 definitionScript=perf.groovy subFolder=perf
 dotnet/coreclr branch=release/1.0.0 server=dotnet-ci
 dotnet/coreclr branch=release/1.1.0 server=dotnet-ci
+dotnet/coreclr branch=release/2.0.0 server=dotnet-ci
 dotnet/coreclr branch=dev/unix_test_workflow server=dotnet-ci
 dotnet/corefx branch=master server=dotnet-ci
 dotnet/corefx branch=release/1.0.0 server=dotnet-ci
 dotnet/corefx branch=release/1.1.0 server=dotnet-ci
+dotnet/corefx branch=release/2.0.0 server=dotnet-ci
 dotnet/corefx branch=master server=dotnet-ci2 definitionScript=perf.groovy subFolder=perf
 dotnet/corefxlab branch=master server=dotnet-ci
 dotnet/corert branch=master server=dotnet-ci
@@ -53,34 +58,39 @@ dotnet/dotnet-docker-nightly branch=sdk-1.0.0 server=dotnet-ci
 dotnet/orleans branch=master server=dotnet-ci
 dotnet/ProjFileTools branch=master server=dotnet-ci
 dotnet/roslyn branch=dev15.0.x server=dotnet-ci
+dotnet/roslyn branch=dev15.0.x subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
 dotnet/roslyn branch=dev15.1.x server=dotnet-ci
+dotnet/roslyn branch=dev15.1.x subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
 dotnet/roslyn branch=dev15.2.x server=dotnet-ci
+dotnet/roslyn branch=dev15.2.x subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
 dotnet/roslyn branch=dev16 server=dotnet-ci
 dotnet/roslyn branch=master server=dotnet-ci
-dotnet/roslyn branch=microupdate server=dotnet-ci
-dotnet/roslyn branch=features/patterns server=dotnet-ci
-dotnet/roslyn branch=features/async-main server=dotnet-ci
-dotnet/roslyn branch=features/privateProtected server=dotnet-ci
-dotnet/roslyn branch=features/ioperation server=dotnet-ci
-dotnet/roslyn branch=features/refout server=dotnet-ci
-dotnet/roslyn branch=features/DefaultInterfaceImplementation server=dotnet-ci
 dotnet/roslyn branch=master subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
-dotnet/roslyn branch=dev15.0.x subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
-dotnet/roslyn branch=dev15.1.x subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
-dotnet/roslyn branch=dev15.2.x subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
+dotnet/roslyn branch=microupdate server=dotnet-ci
+dotnet/roslyn branch=features/async-main server=dotnet-ci
 dotnet/roslyn branch=features/default server=dotnet-ci
+dotnet/roslyn branch=features/DefaultInterfaceImplementation server=dotnet-ci
+dotnet/roslyn branch=features/editorconfig-in-compiler server=dotnet-ci
+dotnet/roslyn branch=features/ioperation server=dotnet-ci
+dotnet/roslyn branch=features/patterns server=dotnet-ci
+dotnet/roslyn branch=features/privateProtected server=dotnet-ci
 dotnet/roslyn branch=features/readonly-ref server=dotnet-ci
-dotnet/roslyn branch=features/xcopy server=dotnet-ci
-dotnet/roslyn branch=run server=dotnet-ci
+dotnet/roslyn branch=features/refout server=dotnet-ci
+dotnet/roslyn branch=features/sdk server=dotnet-ci
+dotnet/roslyn branch=features/tuple-names server=dotnet-ci
 dotnet/roslyn-analyzers branch=master server=dotnet-ci
 dotnet/project-system branch=master server=dotnet-ci
 dotnet/project-system branch=dev15.0.x server=dotnet-ci
 dotnet/project-system branch=dev15.1.x server=dotnet-ci
 dotnet/project-system branch=dev15.2.x server=dotnet-ci
+dotnet/project-system branch=dev15.3.x server=dotnet-ci
 dotnet/sdk branch=master server=dotnet-ci
+dotnet/sdk branch=rel/1.0.0 server=dotnet-ci
+dotnet/sdk branch=release/2.0.0 server=dotnet-ci
 dotnet/sdk branch=dev15.0.x server=dotnet-ci
 dotnet/sdk branch=dev15.1.x server=dotnet-ci
 dotnet/standard branch=master server=dotnet-ci
+dotnet/standard branch=release/2.0.0 server=dotnet-ci
 dotnet/interactive-window branch=master server=dotnet-ci
 dotnet/symreader branch=master server=dotnet-ci
 dotnet/symreader-portable branch=master server=dotnet-ci

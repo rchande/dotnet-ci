@@ -116,6 +116,8 @@ folder('GenPRTest') {}
             maxPerNode(1)
             categories(['job_generators'])
         }
+        
+        label('!windowsnano16 && !performance && !dtap')
 
         label('!windowsnano16 && !performance && !dtap')
 
