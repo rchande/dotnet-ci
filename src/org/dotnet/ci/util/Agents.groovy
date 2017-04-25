@@ -64,6 +64,10 @@ class Agents {
                                 // Contains the rootfs setup for arm/arm64 builds.  Move this label forward
                                 // till we have the working build/test, then apply to everything.
                                 'arm-cross-latest':'auto-ubuntu1404-20170120',
+                                // Pool of arm64 lab machines 4k page size
+                                'arm64-small-page-size':'arm64_ubuntu',
+                                // Pool of arm64 lab machines 64k page size
+                                'arm64-huge-page-size':'arm64_ubuntu_huge_pages',
                                 // Latest auto image.
                                 'latest':'auto-ubuntu1404-20160211.1',
                                 // For outerloop runs.
@@ -270,9 +274,9 @@ class Agents {
                             'Fedora24' :
                                 [
                                 // Latest auto image.
-                                'latest':'fedora24-20161024',
+                                'latest':'fedora24-20170420',
                                 // For outerloop runs
-                                'outer-latest':'fedora24-20161024-outer'
+                                'outer-latest':'fedora24-20170420-outer'
                                 ],
                             'Tizen' :
                                 [
