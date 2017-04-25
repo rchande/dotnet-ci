@@ -55,8 +55,8 @@ class Pipeline {
         String finalString = ''
         for (int i = 0; i < input.length(); i++) {
             char ch = input.charAt(i)
-            // Temporary.  Equals is not invalid, but causes problems with CLI
-            if('=?*/\\%!@#$^&|<>[]:;'.indexOf("${ch}")!=-1) {
+            // Temporary.  '=' and ',' are not invalid paths, but causes problems with CLI
+            if(',=?*/\\%!@#$^&|<>[]:;'.indexOf("${ch}")!=-1) {
                 finalString += '_'
             }
             else {
@@ -99,7 +99,7 @@ class Pipeline {
             boolean needsComma = false
             parameters.each { k,v ->
                 if (needsComma) {
-                    finalJobName += ','
+                    finalJobName += '+'
                 }
                 String paramName = getValidJobNameString(k)
                 // This could be a boolean or string
