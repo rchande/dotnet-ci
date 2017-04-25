@@ -335,6 +335,8 @@ repos.each { repoInfo ->
             // DSL groovy file
             parameters {
                 stringParam('GithubProject', repoInfo.project, 'Project name passed to the DSL generator')
+                stringParam('GithubProjectName', Utilities.getProjectName(repoInfo.project), 'Project name passed to the DSL generator')
+                stringParam('GithubOrgName', Utilities.getOrgName(repoInfo.project), 'Project name passed to the DSL generator')
                 stringParam('GithubBranchName', repoInfo.branch, 'Branch name passed to the DSL generator')
                 stringParam('GithubPRTargetBranches', repoInfo.prTargetBranches.join(','), 'Branches that should be tracked for PRs')
                 stringParam('GithubPRSkipBranches', repoInfo.prSkipBranches.join(','), 'Branches that should be skipped for PRs')

@@ -314,7 +314,7 @@ class Utilities {
 
     /**
      * Sets up the job to fast exit if only certain paths were edited.
-    * <p>
+     * <p>
      * If only files in the paths were changed (these paths are evaluated as globs)
      * then the build exits early. Multiple calls to this function will replace the original
      * ignored paths.
@@ -617,6 +617,10 @@ class Utilities {
                 stringParam('GitBranchOrCommit', defaultBranch, 'Git branch or commit to build.  If a branch, builds the HEAD of that branch.  If a commit, then checks out that specific commit.')
                 // Telemetry
                 stringParam('DOTNET_CLI_TELEMETRY_PROFILE', "IsInternal_CIServer;${project}", 'This is used to differentiate the internal CI usage of CLI in telemetry.  This gets exposed in the environment and picked up by the CLI product.')
+                // Project name (without org)
+                stringParam('GithubProjectName', Utilities.getProjectName(project), 'Project name ')
+                // Org name (without repo)
+                stringParam('GithubOrgName', Utilities.getOrgName(project), 'Project name passed to the DSL generator')
             }
         }
     }
@@ -635,6 +639,10 @@ class Utilities {
                 stringParam('GitRepoUrl', calculateGitURL(project), 'Git repo to clone.')
                 stringParam('GitRefSpec', defaultRefSpec, 'RefSpec.  WHEN SUBMITTING PRIVATE JOB FROM YOUR OWN REPO, CLEAR THIS FIELD (or it won\'t find your code)')
                 stringParam('DOTNET_CLI_TELEMETRY_PROFILE', "IsInternal_CIServer;${project}", 'This is used to differentiate the internal CI usage of CLI in telemetry.  This gets exposed in the environment and picked up by the CLI product.')
+                // Project name (without org)
+                stringParam('GithubProjectName', Utilities.getProjectName(project), 'Project name ')
+                // Org name (without repo)
+                stringParam('GithubOrgName', Utilities.getOrgName(project), 'Project name passed to the DSL generator')
             }
         }
     }
