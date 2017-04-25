@@ -335,8 +335,8 @@ repos.each { repoInfo ->
             // DSL groovy file
             parameters {
                 stringParam('GithubProject', repoInfo.project, 'Project name passed to the DSL generator')
-                stringParam('GithubProjectName', Utilities.getProjectName(repoInfo.project), 'Project name passed to the DSL generator')
-                stringParam('GithubOrgName', Utilities.getOrgName(repoInfo.project), 'Project name passed to the DSL generator')
+                stringParam('GithubProjectName', Utilities.getProjectName(repoInfo.project), 'Project name')
+                stringParam('GithubOrgName', Utilities.getOrgName(repoInfo.project), 'Organization name')
                 stringParam('GithubBranchName', repoInfo.branch, 'Branch name passed to the DSL generator')
                 stringParam('GithubPRTargetBranches', repoInfo.prTargetBranches.join(','), 'Branches that should be tracked for PRs')
                 stringParam('GithubPRSkipBranches', repoInfo.prSkipBranches.join(','), 'Branches that should be skipped for PRs')
@@ -372,7 +372,9 @@ repos.each { repoInfo ->
                         removedJobAction('IGNORE')
                     }
                     else {
-                        removedJobAction('DISABLE')
+                        // Normally this would be DISABLE.  But currently pipeline
+                        // jobs have some issues. Until this is fixed, use DELETE
+                        removedJobAction('DELETE')
                     }
                     removedViewAction('DELETE')
                 }
