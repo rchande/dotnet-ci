@@ -11,6 +11,6 @@ def call() {
         return getTargetBranchForPR()
     }
     else {
-        assert false : "nyi"
+        assert false : "getBranch() nyi"
     }    
 }

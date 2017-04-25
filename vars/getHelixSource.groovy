@@ -9,6 +9,6 @@ def call() {
         return "pr/${projectName}/${prId}"
     }
     else {
-        assert false : "nyi"
+        assert false : "getHelixSource() nyi"
     }
 }

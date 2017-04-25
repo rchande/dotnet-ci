@@ -14,6 +14,6 @@ def call() {
         return ghPullUser
     }
     else {
-        assert false : "nyi"
+        assert false : "getUser() nyi for non-PR"
     }
 }
