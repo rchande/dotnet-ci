@@ -19,7 +19,7 @@ def call(String context, String state, String url, String subMessage = '') {
     // Gather required parameters.  If missing, echo to let the
     // owner know
     def credentialsId = env["ghprbCredentialsId"]
-    if (credentialsId == "") {
+    if (isNullOrEmpty(credentialsId)) {
         echo "Could not find credentials ID (ghprbCredentialsId), ${context} (${subMessage}) is ${state}, see ${url}"
         return
     }
@@ -30,7 +30,7 @@ def call(String context, String state, String url, String subMessage = '') {
 
     // Grab the repository associated
     def repository = env["ghprbGhRepository"]
-    if (repository == "") {
+    if (isNullOrEmpty(repository)) {
         echo "Could not find repository name (ghprbGhRepository), ${context} (${subMessage}) is ${state}, see ${url}"
         return
     }
@@ -39,7 +39,7 @@ def call(String context, String state, String url, String subMessage = '') {
 
     // Find the commit commitSha
     def commitSha = env["ghprbActualCommit"]
-    if (commitSha == "") {
+    if (isNullOrEmpty(commitSha)) {
         echo "Could not find sha (ghprbActualCommit), ${context} (${subMessage}) is ${state}, see ${url}"
         return
     }

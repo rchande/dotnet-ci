@@ -5,6 +5,6 @@
 def call() {
     assert isPR() : "Not a PR"
     def targetBranch = env["ghprbTargetBranch"]
-    assert targetBranch != "" : "Could not find target branch"
+    assert !isNullOrEmpty(targetBranch) : "Could not find target branch"
     return targetBranch
 }

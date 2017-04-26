@@ -10,7 +10,7 @@ def call() {
     def isPRJob = isPR();
     if (isPRJob) {
         def ghPullUser = env["ghprbPullAuthorLogin"]
-        assert ghPullUser != "" : "Could not locate the pull author login "
+        assert !isNullOrEmpty(ghPullUser) : "Could not locate the pull author login "
         return ghPullUser
     }
     else {

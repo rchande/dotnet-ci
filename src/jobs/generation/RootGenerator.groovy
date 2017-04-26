@@ -387,13 +387,8 @@ job('populate_azure_vm_templates') {
     }
 
     parameters {
-        stringParam('GeneratorBuildNumber', '')
-        stringParam('GeneratorJobName', '')
-    }
-
-    // Bind the credential containing the subscription ID (which can be used to construct the cloud id)
-    credentialsBinding {
-        
+        stringParam('CloudSubscriptionCredentialsId', 'dotnet-social-cloud-vms')
+        stringParam('VmTemplateDeclarations', 'data/azure-vm-templates.txt')
     }
 
     // We stream from the workspace since in the groovy 2.0 plugin, the scripts
@@ -405,8 +400,8 @@ job('populate_azure_vm_templates') {
             source {
                 stringSystemScriptSource {
                     script {
-                        script (readFileFromWorkspace('scripts/populate_azure_vm_templates.groovy'))
-                        // Don't execute in sandbox
+                        script (readFileFromWorkspace('scripts/populate-azure-vm-templates.groovy'))
+                        // Don't execute in sandbox (needs approval)
                         sandbox (false)
                     }
                 }

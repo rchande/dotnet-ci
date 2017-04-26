@@ -6,6 +6,6 @@
 def call() {
     assert isPR() : "Not a PR"
     def commitSha = env["ghprbActualCommit"]
-    assert commitSha != "" : "Could not find commit sha"
+    assert !isNullOrEmpty(commitSha) : "Could not find commit sha"
     return commitSha
 }

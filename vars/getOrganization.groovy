@@ -5,7 +5,7 @@
   * @return Org associated with this pipeline.
   */
 def call() {
-    def gitOrgName = env["GitOrgName"]
-    assert gitOrgName != "" : "Could not find GitOrgName parameter"
-    return gitOrgName
+    def githubOrgName = env["GithubOrgName"]
+    assert !isNullOrEmpty(githubOrgName) : "Could not find GithubOrgName parameter"
+    return githubOrgName
 }

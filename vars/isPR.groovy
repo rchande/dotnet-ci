@@ -4,5 +4,5 @@
   */
 def call() {
     def repository = env["ghprbGhRepository"]
-    return (repository != "")
+    return (!isNullOrEmpty(repository))
 }
