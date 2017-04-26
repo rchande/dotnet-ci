@@ -43,6 +43,9 @@ def call(String dockerImageName, String hostVersion, Closure body) {
                     body()
                 }
                 finally {
+                    // Archive anything in the standard log folder
+                    archiveLogs()
+
                     // Normally we would use the workspace cleanup plugin to do this cleanup.
                     // However in the latest versions, it utilizes the AsyncResourceDisposer.
                     // This means that we won't attempt to delete the workspace until after the container

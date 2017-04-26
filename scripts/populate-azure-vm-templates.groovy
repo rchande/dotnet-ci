@@ -6,6 +6,7 @@ import com.microsoft.azure.util.AzureCredentials
 import com.cloudbees.plugins.credentials.CredentialsMatchers
 import com.cloudbees.plugins.credentials.CredentialsProvider
 import com.cloudbees.plugins.credentials.domains.DomainRequirement
+import hudson.security.ACL
 
 // This script relies on the Azure VM Agents plugin 0.4.5 or later.
 // Expected incoming parameters:
@@ -26,7 +27,9 @@ def TestOnly = build.buildVariableResolver.resolve("TestOnly")
 AzureVMCloud cloud = getCloud(CloudSubscriptionCredentialsId)
 
 // Read the file incoming
-streamFileFromWorkspace(VmTemplateDeclarations).eachLine { line ->
+def templateDeclarationText = readFile(VmTemplateDeclarations)
+
+templateDeclarationText.eachLine { line ->
     // Skip comment lines
     boolean skip = (line ==~ / *#.*/);
     line.trim()
@@ -38,23 +41,21 @@ streamFileFromWorkspace(VmTemplateDeclarations).eachLine { line ->
 }
 
 def AzureVMCloud getCloud(String credentialsId) {
-    AzureVMCloud cloud = Jenkins.getInstance().getCloud(getCloudName(credentialsId))
+    String cloudName = getCloudName(credentialsId)
+    println "Looking up cloud with name ${cloudName}"
+    def cloud = Jenkins.getInstance().getCloud(cloudName)
 
     assert cloud != null : "Could not find cloud specified by credentials id ${credentialsId}"
+    return cloud
 }
 
 def String getCloudName(String credentialsId) {
-    AzureCredentials creds = CredentialsMatchers.firstOrNull(CredentialsProvider.lookupCredentials(
-        AzureCredentials.class, Jenkins.getInstance(), ACL.SYSTEM,
-            Collections.<DomainRequirement>emptyList()),
-        CredentialsMatchers.withId(credentialsId));
-
-    if (creds == null) {
-        throw new Exception("Could not find credentials with id: " + credentialsId)
-    }
-
-    // Otherwise, return the cloud name, which we pull using internal APIs of the cloud
-    String cloudName = AzureUtil.getCloudName(credentials.getSubscriptionId())
+    def subscriptionId = AzureCredentials.getServicePrincipal(credentialsId).getSubscriptionId()
+    println "Cloud specified by credentials ${credentialsId} has subscription id ${subscriptionId}"
+    String cloudName = AzureUtil.getCloudName(subscriptionId)
 
     assert cloudName != null && cloudName != "" : "Cloud name not valid"
+
+    println "Cloud specified by credentials ${credentialsId} has cloud name is ${cloudName}"
+    return cloudName
 }
