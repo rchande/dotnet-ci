@@ -389,6 +389,7 @@ job('populate_azure_vm_templates') {
     parameters {
         stringParam('CloudSubscriptionCredentialsId', 'dotnet-social-cloud-vms')
         stringParam('VmTemplateDeclarations', 'data/azure-vm-templates.txt')
+        booleanParam('TestOnly', true)
     }
 
     // We stream from the workspace since in the groovy 2.0 plugin, the scripts

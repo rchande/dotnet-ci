@@ -14,6 +14,9 @@ import com.cloudbees.plugins.credentials.domains.DomainRequirement
 // VmTemplateDeclarations - File, relative to root of dotnet-ci repo containing the list of vm templates
 // TestOnly (boolean) - If true, then this attempts to do everything up to adding the actual images to the cloud.
 //                      This allows for testing of image changes, printing what would be done.
+def CloudSubscriptionCredentialsId = build.buildVariableResolver.resolve("CloudSubscriptionCredentialsId")
+def VmTemplateDeclarations = build.buildVariableResolver.resolve("VmTemplateDeclarations")
+def TestOnly = build.buildVariableResolver.resolve("TestOnly")
 
 // First let's do some basic processing and checks.  The general rule for this script is that if there are 
 // any errors, we bail out before clearing the existing templates.  This means that even if the input list gets
