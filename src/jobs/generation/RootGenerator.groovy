@@ -368,3 +368,49 @@ job('generator_cleaner') {
         }
     }
 }
+
+// Creates a job that pulls and updates the Azure VM templtes from
+// the checked in information.
+job('populate_azure_vm_templates') {
+    logRotator {
+        daysToKeep(7)
+    }
+    
+    // Source is just basic git for dotnet-ci
+    scm {
+        git {
+            remote {
+                github("dotnet/dotnet-ci")
+            }
+            branch("*/${sdkImplBranchName}")
+        }
+    }
+
+    parameters {
+        stringParam('GeneratorBuildNumber', '')
+        stringParam('GeneratorJobName', '')
+    }
+
+    // Bind the credential containing the subscription ID (which can be used to construct the cloud id)
+    credentialsBinding {
+        
+    }
+
+    // We stream from the workspace since in the groovy 2.0 plugin, the scripts
+    // read from disk always execute in the sandbox. This is not the case with inline scripts.
+    // This is a bug.  https://issues.jenkins-ci.org/browse/JENKINS-43700
+    steps {
+        // Rather
+        systemGroovy {
+            source {
+                stringSystemScriptSource {
+                    script {
+                        script (readFileFromWorkspace('scripts/populate_azure_vm_templates.groovy'))
+                        // Don't execute in sandbox
+                        sandbox (false)
+                    }
+                }
+            }
+        }
+    }
+}
