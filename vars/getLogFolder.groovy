@@ -3,11 +3,14 @@
   * @return Log folder.  Creates if necessary
   */
 def call() {
-    String logFolder = "${WORKSPACE}/netci-archived-logs/"
+    String logFolder
     if (isUnix()) {
+        logFolder = "${WORKSPACE}/netci-archived-logs/"
         sh "mkdir -p '${logFolder}'"
     }
     else {
+        logFolder = "${WORKSPACE}\\netci-archived-logs\\"
+        assert logFolder.indexOf("/") == -1 : "Unexpected forward slashes in windows path component"
         bat "if NOT exists '${logFolder}' mkdir '${logFolder}'"
     }
 
