@@ -3,12 +3,13 @@
   * @return Helix source
   */
 def call() {
+    def projectName = getProject()
+    def orgName = getOrganization()
+    def branch = getBranch()
     if (isPR()) {
-        def projectName = getProject()
-        def prId = getPRNumber()
-        return "pr/${projectName}/${prId}"
+        return "pr/jenkins/${orgName}/${projectName}/${branch}"
     }
     else {
-        assert false : "getHelixSource() nyi"
+        return "automated/jenkins/${orgName}/${projectName}/origin/${branch}"
     }
 }

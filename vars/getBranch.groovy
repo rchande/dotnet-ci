@@ -11,6 +11,12 @@ def call() {
         return getTargetBranchForPR()
     }
     else {
-        assert false : "getBranch() nyi"
+        // This may not be reliable, but we can try to use GitBranchOrCommit.
+        def branch = env["GitBranchOrCommit"]
+        // This could theoretically be just a hash, but use it anyway.
+        // It's likely it's prefixed with */, strip that off.
+        if (branch.indexOf("*/") == 0) {
+            return branch.substring(2)
+        }
     }    
 }
