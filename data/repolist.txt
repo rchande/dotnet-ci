@@ -45,6 +45,7 @@ dotnet/coreclr branch=release/1.0.0 server=dotnet-ci
 dotnet/coreclr branch=release/1.1.0 server=dotnet-ci
 dotnet/coreclr branch=release/2.0.0 server=dotnet-ci
 dotnet/coreclr branch=dev/unix_test_workflow server=dotnet-ci
+dotnet/coreclr branch=dev/local-gc server=dotnet-ci
 dotnet/corefx branch=master server=dotnet-ci
 dotnet/corefx branch=release/1.0.0 server=dotnet-ci
 dotnet/corefx branch=release/1.1.0 server=dotnet-ci
@@ -63,6 +64,8 @@ dotnet/roslyn branch=dev15.1.x server=dotnet-ci
 dotnet/roslyn branch=dev15.1.x subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
 dotnet/roslyn branch=dev15.2.x server=dotnet-ci
 dotnet/roslyn branch=dev15.2.x subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
+dotnet/roslyn branch=dev15.3-preview1 server=dotnet-ci
+dotnet/roslyn branch=dev15.3-preview1 subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
 dotnet/roslyn branch=dev16 server=dotnet-ci
 dotnet/roslyn branch=master server=dotnet-ci
 dotnet/roslyn branch=master subFolder=perf definitionScript=perf.groovy server=dotnet-ci2
