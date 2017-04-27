@@ -19,6 +19,13 @@ def CloudSubscriptionCredentialsId = build.buildVariableResolver.resolve("CloudS
 def VmTemplateDeclarations = build.buildVariableResolver.resolve("VmTemplateDeclarations")
 def TestOnly = build.buildVariableResolver.resolve("TestOnly")
 
+// Since this is running on the master, we need to be clever to get the path to the file.
+// Potentially if this was changed to a pipeline, we could separate out the system groovy step
+// into another section, read the file first and only execute a few things on the master.  But nbd.
+def currentBuild = Thread.currentThread().executable
+def fullPathToTemplates ="${currentBuild.workspace.toString()}/${VmTemplateDeclarations}"
+println fullPathToTemplates 
+
 // First let's do some basic processing and checks.  The general rule for this script is that if there are 
 // any errors, we bail out before clearing the existing templates.  This means that even if the input list gets
 // screwed up, we don't mess up the existing template config
@@ -27,9 +34,11 @@ def TestOnly = build.buildVariableResolver.resolve("TestOnly")
 AzureVMCloud cloud = getCloud(CloudSubscriptionCredentialsId)
 
 // Read the file incoming
-def templateDeclarationText = readFile(VmTemplateDeclarations)
+def file = new File(fullPathToTemplates)
+def templateDeclarationText = file.readLines()
 
-templateDeclarationText.eachLine { line ->
+templateDeclarationText.each { line ->
+    println line
     // Skip comment lines
     boolean skip = (line ==~ / *#.*/);
     line.trim()

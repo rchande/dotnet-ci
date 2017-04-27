@@ -3,8 +3,8 @@
   * @return Log folder.  Creates if necessary
   */
 def call() {
+    String logFolder = "${WORKSPACE}/netci-archived-logs/"
     if (isUnix()) {
-        def logFolder = "${WORKSPACE}/netci-archived-logs/"
         sh "if [ ! -d '${logFolder}' ]; then mkdir -p '${logFolder}'"
     }
     else {
