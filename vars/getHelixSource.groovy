@@ -7,9 +7,9 @@ def call() {
     def orgName = getOrganization()
     def branch = getBranch()
     if (isPR()) {
-        return "pr/jenkins/${orgName}/${projectName}/${branch}"
+        return "pr/jenkins/${orgName}/${projectName}/${branch}/"
     }
     else {
-        return "automated/jenkins/${orgName}/${projectName}/origin/${branch}"
+        return "automated/jenkins/${orgName}/${projectName}/origin/${branch}/"
     }
 }
