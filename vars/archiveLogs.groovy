@@ -4,5 +4,5 @@
 def call() {
     String logFolder = getLogFolder()
     echo "Archiving logs in ${logFolder}"
-    archiveArtifacts allowEmptyArchive: true, artifacts: "${logFolder}/**"
+    archiveArtifacts allowEmptyArchive: true, artifacts: "${logFolder}**"
 }
