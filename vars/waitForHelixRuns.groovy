@@ -70,7 +70,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                     def totalTests = passedTests + failedTests + skippedTests
                     resultsContent = null
 
-                    def preStatus = isRunning ? "Running - "
+                    def preStatus = isRunning ? "Running - " : ""
                     // Compute the current resultValue.  We'll update the sub result every time, but the final result only when isFinished is true
                     if (failedTests != 0) {
                         resultValue = "FAILURE"
