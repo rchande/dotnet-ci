@@ -36,16 +36,18 @@ def call (def helixRunsBlob, String prStatusPrefix) {
             // Wait until the Helix runs complete.
             waitUntil (minRecurrencePeriod: 60, maxRecurrencePeriod: 60, unit: 'SECONDS') {
                 // Check the state against the Helix API
-                def detailsUrl = "https://helix.dot.net/api/jobs/${correlationId}/details"
-                def response = httpRequest detailsUrl
-                def content = (new JsonSlurper()).parseText(response.content)
+                def statusUrl = "https://helix.int-dot.net/api/2017-04-14/jobs/${correlationId}/details"
+                def statusResponse = httpRequest statusUrl
+                def statusContent = (new JsonSlurper()).parseText(statusResponse.content)
 
                 // If the job info hasn't been propagated to the helix api, then we need to wait around.
-                boolean isNotStarted = content.JobList == null
-                boolean isPending = !isNotStarted && content.WorkItems.Running == 0 && content.WorkItems.Finished == 0
-                boolean isFinished = !isNotStarted && content.WorkItems.Unscheduled == 0 && content.WorkItems.Waiting == 0 && content.WorkItems.Running == 0
+                boolean isNotStarted = statusContent.JobList == null
+                boolean isPending = !isNotStarted && statusContent.WorkItems.Running == 0 && statusContent.WorkItems.Finished == 0
+                boolean isFinished = !isNotStarted && statusContent.WorkItems.Unscheduled == 0 && statusContent.WorkItems.Waiting == 0 && statusContent.WorkItems.Running == 0
                 boolean isRunning = !isNotStarted && !isPending && !isFinished
-                content = null
+                statusContent = null
+
+                // We can also grab the info necessary to construct the link for Mission Control from this API.
 
                 if (isPending && state == 0) {
                     state = 1
@@ -58,7 +60,32 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                 else if (isFinished) {
                     state = 3
                     // Check the results
-                    setPRStatus(context, "SUCCESS", detailsUrl, "Finished")
+                    // We check the results by going to the API aggregating by correlation id
+                    def resultsUrl = "https://helix.int-dot.net/api/2017-04-14/aggregate/jobs?groupBy=job.name&maxResultSets=1&filter.name=${correlationId}"
+                    def resultsResponse = httpRequest resultsUrl
+                    def resultsContent = (new JsonSlurper()).parseText(resultsResponse.content)
+
+                    // Some checks                    
+                    assert resultsContent.size() == 1 : "No results found for helix results API"
+                    assert resultsContent[0].Data != null : "No data found in first result for helix results API"
+                    assert resultsContent[0].Data.Name == "xunit" : "Data in results api not xunit format"
+                    def passedTests = resultsContent[0].Data.Status.pass
+                    def failedTests = resultsContent[0].Data.Status.fail
+                    def skippedTests = resultsContent[0].Data.Status.skip
+                    def totalTests = passedTests + failedTests + skippedTests
+
+                    def resultValue
+                    def subMessage
+                    if (failedTests != 0) {
+                        resultValue = "FAILURE"
+                        subMessage = "Failed ${failedTests}/${totalTests} (${skippedTests} skipped)"
+                    }
+                    else {
+                        resultValue = "SUCCESS"
+                        subMessage = "Passed ${passedTests} (${skippedTests} skipped)"
+                    }
+
+                    setPRStatus(context, resultValue, detailsUrl, subMessage)
                     return true
                 }
                 return false
