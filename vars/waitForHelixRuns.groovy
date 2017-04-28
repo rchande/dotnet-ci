@@ -1,5 +1,5 @@
 import groovy.json.JsonSlurper
-
+import hudson.Util
 // Given a set of launched Helix runs,
 // wait for them to finish.  If running a PR, also reports the
 // the state of the runs on the PR.
@@ -44,21 +44,16 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                 boolean isNotStarted = statusContent.JobList == null
                 boolean isPending = !isNotStarted && statusContent.WorkItems.Running == 0 && statusContent.WorkItems.Finished == 0
                 boolean isFinished = !isNotStarted && statusContent.WorkItems.Unscheduled == 0 && statusContent.WorkItems.Waiting == 0 && statusContent.WorkItems.Running == 0
+                boolean someFinished = statusContent.WorkItems.Finished > 0
                 boolean isRunning = !isNotStarted && !isPending && !isFinished
+                // Construct the link to the results page.
+                def mcResultsUrl = "https://mc.int-dot.net/#/user/${Util.rawEncode(statusContent.Creator)}/${Util.rawEncode(statusContent.Source)}/${Util.rawEncode(statusContent.Type)}/${Util.rawEncode(statusContent.Build)}"
                 statusContent = null
 
-                // We can also grab the info necessary to construct the link for Mission Control from this API.
-
-                if (isPending && state == 0) {
-                    state = 1
-                    setPRStatus(context, "PENDING", "", "Waiting")
-                }
-                else if (isRunning && state < 2) {
-                    state = 2
-                    setPRStatus(context, "PENDING", detailsUrl, "Started")
-                }
-                else if (isFinished) {
-                    state = 3
+                def resultValue
+                def subMessage
+                // If it's running, grab the current state of results too
+                if (isRunning || isFinished) {
                     // Check the results
                     // We check the results by going to the API aggregating by correlation id
                     def resultsUrl = "https://helix.int-dot.net/api/2017-04-14/aggregate/jobs?groupBy=job.name&maxResultSets=1&filter.name=${correlationId}"
@@ -73,19 +68,34 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                     def failedTests = resultsContent[0].Data.Status.fail
                     def skippedTests = resultsContent[0].Data.Status.skip
                     def totalTests = passedTests + failedTests + skippedTests
+                    resultsContent = null
 
-                    def resultValue
-                    def subMessage
+                    def preStatus = isRunning ? "Running - "
+                    // Compute the current resultValue.  We'll update the sub result every time, but the final result only when isFinished is true
                     if (failedTests != 0) {
                         resultValue = "FAILURE"
-                        subMessage = "Failed ${failedTests}/${totalTests} (${skippedTests} skipped)"
+                        subMessage = "${preStatus}Failed ${failedTests}/${totalTests} (${skippedTests} skipped)"
                     }
                     else {
                         resultValue = "SUCCESS"
-                        subMessage = "Passed ${passedTests} (${skippedTests} skipped)"
+                        subMessage = "${preStatus}Passed ${passedTests} (${skippedTests} skipped)"
                     }
+                }
 
-                    setPRStatus(context, resultValue, detailsUrl, subMessage)
+                // We can also grab the info necessary to construct the link for Mission Control from this API.
+
+                if (isPending && state == 0) {
+                    state = 1
+                    setPRStatus(context, "PENDING", "", "Waiting")
+                }
+                else if (isRunning && state < 2) {
+                    state = 2
+                    setPRStatus(context, "PENDING", mcResultsUrl, subMessage)
+                }
+                else if (isFinished) {
+                    state = 3
+
+                    setPRStatus(context, resultValue, mcResultsUrl, subMessage)
                     return true
                 }
                 return false
