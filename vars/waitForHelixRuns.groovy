@@ -34,7 +34,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
             int state = 0;
 
             // Wait until the Helix runs complete.
-            waitUntil (minRecurrencePeriod: 60, maxRecurrencePeriod: 60, unit: 'SECONDS') {
+            waitUntil (minRecurrencePeriod: 60, maxRecurrencePeriod: 120, unit: 'SECONDS') {
                 // Check the state against the Helix API
                 def statusUrl = "https://helix.int-dot.net/api/2017-04-14/jobs/${correlationId}/details"
                 def statusResponse = httpRequest statusUrl
@@ -104,15 +104,14 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                         def skippedTests = resultsContent[0].Data.Analysis[0].Status.skip ? resultsContent[0].Data.Analysis[0].Status.skip : 0
                         def totalTests = passedTests + failedTests + skippedTests
 
-                        def preStatus = isRunning ? "Running - " : ""
                         // Compute the current resultValue.  We'll update the sub result every time, but the final result only when isFinished is true
                         if (failedTests != 0) {
                             resultValue = "FAILURE"
-                            subMessage = "${preStatus}Failed ${failedTests}/${totalTests} (${skippedTests} skipped)"
+                            subMessage = "Failed ${failedTests}/${totalTests} (${skippedTests} skipped)"
                         }
                         else {
                             resultValue = "SUCCESS"
-                            subMessage = "${preStatus}Passed ${passedTests} (${skippedTests} skipped)"
+                            subMessage = "Passed ${passedTests} (${skippedTests} skipped)"
                         }
                     }
                     resultsContent = null
@@ -124,7 +123,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                     state = 1
                     setPRStatus(context, "PENDING", "", "Waiting")
                 }
-                else if (isRunning && state < 2) {
+                else if (isRunning) {
                     state = 2
                     setPRStatus(context, "PENDING", mcResultsUrl, subMessage)
                 }
