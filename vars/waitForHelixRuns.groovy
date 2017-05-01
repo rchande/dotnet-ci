@@ -94,9 +94,14 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                     else {
                         assert resultsContent[0].Data.Analysis.size() == 1 : "More than one set of analysis results"
                         assert resultsContent[0].Data.Analysis[0].Name == "xunit" : "Data in results api not xunit format"
-                        def passedTests = resultsContent[0].Data.Analysis[0].Status.pass
-                        def failedTests = resultsContent[0].Data.Analysis[0].Status.fail
-                        def skippedTests = resultsContent[0].Data.Analysis[0].Status.skip
+                        assert resultsContent[0].Data.Analysis[0].Status != null : "No status found in Analysis section"
+                        assert resultsContent[0].Data.Analysis[0].Status.pass != null || 
+                            resultsContent[0].Data.Analysis[0].Status.fail != null ||
+                            resultsContent[0].Data.Analysis[0].Status.skip != null : "Expected at least one of pass/fail/skip"
+                            
+                        def passedTests = resultsContent[0].Data.Analysis[0].Status.pass != null ? resultsContent[0].Data.Analysis[0].Status.pass : 0
+                        def failedTests = resultsContent[0].Data.Analysis[0].Status.fail ? resultsContent[0].Data.Analysis[0].Status.fail : 0
+                        def skippedTests = resultsContent[0].Data.Analysis[0].Status.skip ? resultsContent[0].Data.Analysis[0].Status.skip : 0
                         def totalTests = passedTests + failedTests + skippedTests
 
                         def preStatus = isRunning ? "Running - " : ""
