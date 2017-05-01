@@ -60,6 +60,8 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                     def resultsResponse = httpRequest resultsUrl
                     def resultsContent = (new JsonSlurper()).parseText(resultsResponse.content)
 
+                    echo resultsContent
+
                     // Some checks                    
                     assert resultsContent.size() == 1 : "No results found for helix results API"
                     assert resultsContent[0].Data != null : "No data found in first result for helix results API"
