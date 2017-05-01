@@ -36,7 +36,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
             // Wait until the Helix runs complete.
             waitUntil (minRecurrencePeriod: 60, maxRecurrencePeriod: 60, unit: 'SECONDS') {
                 // Check the state against the Helix API
-                def statusUrl = "https://helix.dot.net/api/2017-04-14/jobs/${correlationId}/details"
+                def statusUrl = "https://helix.int-dot.net/api/2017-04-14/jobs/${correlationId}/details"
                 def statusResponse = httpRequest statusUrl
                 def statusContent = (new JsonSlurper()).parseText(statusResponse.content)
 
@@ -47,7 +47,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                 boolean someFinished = statusContent.WorkItems.Finished > 0
                 boolean isRunning = !isNotStarted && !isPending && !isFinished
                 // Construct the link to the results page.
-                def mcResultsUrl = "https://mc.dot.net/#/user/${Util.rawEncode(statusContent.Creator)}/${Util.rawEncode(statusContent.Source)}/${Util.rawEncode(statusContent.Type)}/${Util.rawEncode(statusContent.Build)}"
+                def mcResultsUrl = "https://mc.int-dot.net/#/user/${getEncodedUrl(statusContent.Creator)}/${getEncodedUrl(statusContent.Source)}/${getEncodedUrl(statusContent.Type)}/${getEncodedUrl(statusContent.Build)}"
                 statusContent = null
 
                 def resultValue
@@ -56,7 +56,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                 if (isRunning || isFinished) {
                     // Check the results
                     // We check the results by going to the API aggregating by correlation id
-                    def resultsUrl = "https://helix.dot.net/api/2017-04-14/aggregate/jobs?groupBy=job.name&maxResultSets=1&filter.name=${correlationId}"
+                    def resultsUrl = "https://helix.int-dot.net/api/2017-04-14/aggregate/jobs?groupBy=job.name&maxResultSets=1&filter.name=${correlationId}"
                     def resultsResponse = httpRequest resultsUrl
                     def resultsContent = (new JsonSlurper()).parseText(resultsResponse.content)
 
