@@ -25,6 +25,9 @@ def call(String osName, version, Closure body) {
             }
         }
         finally {
+            // Archive anything in the standard log folder
+            archiveLogs()
+            // Clean
             step([$class: 'WsCleanup'])
         }
     }
