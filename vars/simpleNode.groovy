@@ -14,7 +14,7 @@ import org.dotnet.ci.util.Agents
 //  imageVersion - Version of the OS image.  See Agents.getMachineAffinity
 //  body - Closure, see example
 def call(String osName, version, Closure body) {
-    node (Agents.getAgentLabel(osName, imageVersion)) {
+    node (Agents.getAgentLabel(osName, version)) {
         // Wrap in a try finally that cleans up the workspace
         try {
             timestamps {
