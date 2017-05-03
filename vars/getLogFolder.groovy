@@ -11,7 +11,7 @@ def call() {
     else {
         logFolder = "${WORKSPACE}\\netci-archived-logs\\"
         assert logFolder.indexOf("/") == -1 : "Unexpected forward slashes in windows path component"
-        bat "if NOT exists '${logFolder}' mkdir '${logFolder}'"
+        bat "if not exist \"${logFolder}\" mkdir \"${logFolder}\""
     }
 
     return logFolder
