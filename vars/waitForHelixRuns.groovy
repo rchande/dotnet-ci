@@ -1,4 +1,4 @@
-import groovy.json.JsonSlurper
+import groovy.json.JsonSlurperClassic
 import hudson.Util
 // Given a set of launched Helix runs,
 // wait for them to finish.  If running a PR, also reports the
@@ -38,7 +38,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                 // Check the state against the Helix API
                 def statusUrl = "https://helix.int-dot.net/api/2017-04-14/jobs/${correlationId}/details"
                 def statusResponse = httpRequest statusUrl
-                def statusContent = (new JsonSlurper()).parseText(statusResponse.content)
+                def statusContent = (new JsonSlurperClassic()).parseText(statusResponse.content)
 
                 // If the job info hasn't been propagated to the helix api, then we need to wait around.
                 boolean isNotStarted = statusContent.JobList == null
@@ -58,7 +58,7 @@ def call (def helixRunsBlob, String prStatusPrefix) {
                     // We check the results by going to the API aggregating by correlation id
                     def resultsUrl = "https://helix.int-dot.net/api/2017-04-14/aggregate/jobs?groupBy=job.name&maxResultSets=1&filter.name=${correlationId}"
                     def resultsResponse = httpRequest resultsUrl
-                    def resultsContent = (new JsonSlurper()).parseText(resultsResponse.content)
+                    def resultsContent = (new JsonSlurperClassic()).parseText(resultsResponse.content)
 
                     // Example content
                     // If the data isn't complete, then Analysis will be empty.
