@@ -23,10 +23,6 @@ def call(String context, String state, String url, String subMessage = '') {
         echo "Could not find credentials ID (ghprbCredentialsId), ${context} (${subMessage}) is ${state}, see ${url}"
         return
     }
-    GhprbGitHubAuth auth = GhprbTrigger.getDscp().getGitHubAuth(credentialsId);
-
-    // Grab the project we're building
-    GitHub gh = auth.getConnection(currentBuild.rawBuild.getParent());
 
     // Grab the repository associated
     def repository = env["ghprbGhRepository"]
@@ -34,9 +30,6 @@ def call(String context, String state, String url, String subMessage = '') {
         echo "Could not find repository name (ghprbGhRepository), ${context} (${subMessage}) is ${state}, see ${url}"
         return
     }
-
-    GHRepository ghRepository = gh.getRepository(repository);
-
     // Find the commit commitSha
     def commitSha = env["ghprbActualCommit"]
     if (isNullOrEmpty(commitSha)) {
@@ -44,6 +37,15 @@ def call(String context, String state, String url, String subMessage = '') {
         return
     }
 
+    GhprbGitHubAuth auth = GhprbTrigger.getDscp().getGitHubAuth(credentialsId);
+    GitHub gh = auth.getConnection(currentBuild.rawBuild.getParent());
+    // Null out the auth object so that Jenkins doesn't potentially ask to serialize it
+    auth = null
+    GHRepository ghRepository = gh.getRepository(repository);
+    // Null out the gh object so that Jenkins doesn't potentially ask to serialize it
+    gh = null
     // Create the state
     ghRepository.createCommitStatus(commitSha, ghState, url, subMessage, context);
+    // Null out the ghRepository object so that Jenkins doesn't potentially ask to serialize it
+    ghRepository = null
 }
